@@ -13,6 +13,6 @@ namespace GamzeBlogPsikolog.EntityViewModels
         public string? BlogThumbImage { get; set; }
         public DateTime CreateDate { get; set; }
         public bool Status { get; set; }
-        public List<Comment>? Comments { get; set; }
+        public List<CommentViewModel>? Comments { get; set; }
     }
 }
