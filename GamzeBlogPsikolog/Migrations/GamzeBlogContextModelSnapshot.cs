@@ -17,7 +17,7 @@ namespace GamzeBlogPsikolog.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.0")
+                .HasAnnotation("ProductVersion", "8.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -68,11 +68,9 @@ namespace GamzeBlogPsikolog.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("BlogImage")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("BlogTag")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("BlogThumbImage")

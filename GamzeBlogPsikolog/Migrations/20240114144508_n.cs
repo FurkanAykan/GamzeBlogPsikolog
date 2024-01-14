@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace GamzeBlogPsikolog.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class n : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -77,8 +77,8 @@ namespace GamzeBlogPsikolog.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     BlogTitle = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     BlogContent = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    BlogTag = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    BlogImage = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BlogTag = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BlogImage = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BlogThumbImage = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<bool>(type: "bit", nullable: false)

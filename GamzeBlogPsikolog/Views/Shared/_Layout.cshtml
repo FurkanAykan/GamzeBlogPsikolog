@@ -116,7 +116,10 @@
                             <!-- Nav Start -->
                             <div class="classynav">
                                 <ul>
-                                    <li><a href="index.html">Home</a></li>
+                                    <li><a asp-action="Index" asp-controller="Home">Anasayfa</a></li>
+                                    <li><a asp-action="Index" asp-controller="Blog">Bloglar</a></li>
+                                    <li><a asp-action="Index" asp-controller="About">Hakkımda</a></li>
+                                    <li><a asp-action="Index" asp-controller="Contact">İletişim</a></li>
                                     <li>
                                         <a href="#">Pages</a>
                                         <ul class="dropdown">
@@ -127,7 +130,7 @@
                                             <li><a href="coming-soon.html">Coming Soon</a></li>
                                         </ul>
                                     </li>
-                                    <li>
+                                    @*  <li>
                                         <a href="#">Catagory</a>
                                         <ul class="dropdown">
                                             <li><a href="#">Catagory 1</a></li>
@@ -175,7 +178,7 @@
                                             </ul>
                                         </div>
                                     </li>
-                                    <li><a href="contact.html">Contact</a></li>
+                                    <li><a href="contact.html">Contact</a></li> *@
                                 </ul>
 
                                 <!-- Search Form  -->
@@ -329,6 +332,7 @@
     <!-- ##### Footer Area End ##### -->
     <!-- jQuery (Necessary for All JavaScript Plugins) -->
     <script src="~/Theme/js/jquery/jquery-2.2.4.min.js"></script>
+
     <!-- Popper js -->
     <script src="~/Theme/js/popper.min.js"></script>
     <!-- Bootstrap js -->

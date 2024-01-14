@@ -1,0 +1,51 @@
+﻿@model List<BlogPostViewModel>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!-- ##### Breadcumb Area Start ##### -->
+<div class="breadcumb-area bg-img" style="background-image: url(img/bg-img/b1.jpg);">
+    <div class="container h-100">
+        <div class="row h-100 align-items-center">
+            <div class="col-12">
+                <div class="breadcumb-content text-center">
+                    <h2>Bloglarım</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ##### Breadcumb Area End ##### -->
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-lg-12">
+            @foreach (var blog in Model)
+            {
+                <div class="single-blog-area blog-style-2 mb-50 wow fadeInUp" data-wow-delay="0.4s" data-wow-duration="1000ms">
+                    <div class="row">
+                        <div class="col-12">
+                            <div  class="single-blog-thumbnail">
+                                <a asp-controller="Blog" asp-action="BlogDetail" asp-route-id="@blog.BlogId">  <img src="~/Theme/img/blog-img/7.jpg" alt=""></a>
+                                <div class="post-date">
+                                    <a href="#">10 <span>march</span></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <!-- Blog Content -->
+                            <div class="single-blog-content mt-50">
+                                <div class="line"></div>        
+                                <h4><a asp-controller="Blog" asp-action="BlogDetail" asp-route-id="@blog.BlogId" class="post-headline">@blog.BlogTitle</a></h4>
+                                <p>Curabitur venenatis efficitur lorem sed tempor. Integer aliquet tempor cursus. Nullam vestibulum convallis risus vel condimentum. Nullam auctor lorem in libero luctus, vel volutpat quam tincidunt.</p>
+                                <div class="post-meta">
+                                    <p>By <a href="#">james smith</a></p>
+                                    <p>3 comments</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

@@ -8,6 +8,7 @@ namespace GamzeBlogPsikolog.Mapping
     {
         public MappingProfile() {
             CreateMap<BlogPost, BlogPostViewModel>().ReverseMap();
+            CreateMap<Comment, CommentViewModel>().ReverseMap();
         }
     }
 }

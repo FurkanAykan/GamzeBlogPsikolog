@@ -12,15 +12,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GamzeBlogPsikolog.Migrations
 {
     [DbContext(typeof(GamzeBlogContext))]
-    [Migration("20240107141643_Initial")]
-    partial class Initial
+    [Migration("20240114144508_n")]
+    partial class n
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.0")
+                .HasAnnotation("ProductVersion", "8.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -71,11 +71,9 @@ namespace GamzeBlogPsikolog.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("BlogImage")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("BlogTag")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("BlogThumbImage")
