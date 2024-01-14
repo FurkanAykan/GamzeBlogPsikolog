@@ -1,7 +1,13 @@
-﻿@model List<BlogPostViewModel>
+﻿@using PagedList
+
+
+
+@model AdminBlogList
+
 @{
     ViewData["Title"] = "Blog Ekleme";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+
 }
 <style>
     /* Add this CSS to make the modal full-width */
@@ -19,11 +25,40 @@
         margin: auto; /* This centers the modal content horizontally */
         margin-top: 25px;
     }
+
+    .pagination {
+        display: flex;
+        list-style: none;
+    }
+
+        .pagination a {
+            padding: 8px;
+            margin: 4px;
+            text-decoration: none;
+            color: #333;
+            background-color: #eee;
+            border-radius: 4px;
+        }
+
+            .pagination a.active {
+                background-color: #007bff;
+                color: #fff;
+            }
+
+        .pagination .ellipsis {
+            padding: 8px;
+            margin: 4px;
+            pointer-events: none;
+        }
+
 </style>
+@{
+    int deger = (int)ViewBag.pagenumber;
+}
 @* List Start *@
 <div class="main-panel">
     <div class="content-wrapper">
-        <div class="row">
+        <div class="row" style="display:grid">
             <div class="col-12 grid-margin stretch-card">
                 <!-- Updated the class from "col-lg-6" to "col-12" to take up the full width -->
                 <div class="card">
@@ -39,6 +74,7 @@
                         <table class="table">
                             <thead>
                                 <tr>
+                                    <th style="width: 10px">#</th>
                                     <th>Blog Başlığı</th>
                                     <th>Blog Oluşturulma Tarihi</th>
                                     <th>Durumu</th>
@@ -47,19 +83,72 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach(var post in Model)
+                                @{
+                                    int sayi = 1;
+                                }
+                                @foreach (var post in Model.BlogList)
                                 {
-                                    <tr>
-                                        <td>@post.BlogTitle</td>
-                                        <td>@post.CreateDate.ToShortDateString()</td>
-                                        <td><label class="badge badge-@(post.Status?"success":"danger")">@(post.Status ? "Yayında" : "Yayında Değil")</label></td>
-                                        <td><input type="button" class="mdi mdi-tooltip-edit" id="btnsubmit" value="Güncelle" /></td>
-                                        <td><button class="btn btn-@(post.Status ? "danger" : "success")">@(post.Status ? "Yayından Kaldır" : "Yayına Al")</button></td>
-                                    </tr>
+                                    if (sayi % 2 == 0)
+                                    {
+                                        <tr>
+                                            <td class="fnt-bld">@($"{deger + sayi}.")</td>
+                                            <td>@post.BlogTitle</td>
+                                            <td>@post.CreateDate.ToShortDateString()</td>
+                                            <td><label class="badge badge-@(post.Status?"success":"danger")">@(post.Status ? "Yayında" : "Yayında Değil")</label></td>
+                                            <td><input type="button" class="mdi mdi-tooltip-edit" id="btnsubmit" value="Güncelle" /></td>
+                                            <td>
+                                                <button class="btn btn-@(post.Status ? "danger" : "success") changeStatu" data-post-id="@post.BlogId">
+                                                    @(post.Status ? "Yayından Kaldır" : "Yayına Al")
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td class="fnt-bld">@($"{deger + sayi}.")</td>
+                                            <td>@post.BlogTitle</td>
+                                            <td>@post.CreateDate.ToShortDateString()</td>
+                                            <td><label class="badge badge-@(post.Status?"success":"danger")">@(post.Status ? "Yayında" : "Yayında Değil")</label></td>
+                                            <td><input type="button" class="mdi mdi-tooltip-edit" id="btnsubmit" value="Güncelle" /></td>
+                                            <td>
+                                                <button class="btn btn-@(post.Status ? "danger" : "success") changeStatu" data-post-id="@post.BlogId">
+                                                    @(post.Status ? "Yayından Kaldır" : "Yayına Al")
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                    sayi++;
                                 }
                                
                             </tbody>
                         </table>
+                        <div class="pagination">
+                            @if (Model.PageNumber > 1)
+                            {
+                                <a href="/admin/post/index/1">&lt;</a>
+                            }
+
+                            @if (Model.PageNumber > 2)
+                            {
+                                <span class="ellipsis">...</span>
+                            }
+
+                            @for (int i = Math.Max(1, Model.PageNumber - 1); i <= Math.Min(Model.PageSize, Model.PageNumber + 1); i++)
+                            {
+                                <a href="/admin/post/index/@i" class="@(i == Model.PageNumber ? "active" : "")">@i</a>
+                            }
+
+                            @if (Model.PageNumber < ViewBag.data - 1)
+                            {
+                                <span class="ellipsis">...</span>
+                            }
+
+                            @if (Model.PageNumber < ViewBag.data)
+                            {
+                                <a href="/admin/post/index/@Model.PageSize">&gt;</a>
+                            }
+                        </div>
                     </div>
                 </div>
             </div>
@@ -73,7 +162,7 @@
     <div class="modal-dialog modal-fullpage" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button id="closeModalIcon" type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -82,8 +171,7 @@
                     <div class="card">
                         <div class="card-body">
                             <h4 class="card-title"> Blog Ekleme</h4>
-                            <br/>
-                            
+                            <br />
                             <form class="forms-sample">
                                 <div class="form-group">
                                     <label for="blogTitle">Blog Başlığı</label>
@@ -113,7 +201,8 @@
 
                                 <div class="form-group">
                                     <label for="blogContent">Blog İçeriği</label>
-                                    <textarea class="form-control" id="blogContent" rows="4"></textarea>
+                                    @* <textarea class="form-control" id="blogContent" rows="4"></textarea> *@
+                                    <textarea class="form-control" id="blogContent" name="blogContent" rows="4"></textarea>
                                 </div>
                                 <input type="button" class="btn btn-gradient-primary mr-2" id="btnBlogSubmit" value="Kaydet" />
                                 <button class="btn btn-light">İptal</button>
@@ -128,16 +217,18 @@
 @* Modal End *@
 
 
-@section Scripts{
+@section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.min.js"></script>
     <script>
-
+        CKEDITOR.replace('blogContent');
         $(document).ready(function () {
             $("#btnsubmit").click(function () {
                 $('#myModal').modal('show');
             });
-
             $('#btnBlogSubmit').click(function () {
                 var fileInput = document.getElementById('fileInput');
                 var file = fileInput.files[0];
@@ -164,13 +255,13 @@
                     handleBlogPost(null);
                 }
             });
-
             function handleBlogPost(imagePath) {
                 var blogTitle = $("#blogTitle").val();
-                var blogContent = $('#blogContent').val();
+                // var blogContent = $('#blogContent').val();
+                var blogContent = CKEDITOR.instances.blogContent.getData();
                 var blogTag = $("#blogTag").val();
                 var blogStatu = ($("#blogStatu").val() === "True");
-              
+
                 var postData = {
                     BlogTitle: blogTitle,
                     BlogTag: blogTag,
@@ -187,15 +278,59 @@
                     success: function (response) {
                         $('#myModal').modal('hide');
                         alert("Blog başarıyla eklendi!");
+                        location.reload();
                     },
                     error: function (error) {
                         alert("Bir hata oluştu. Blog eklenemedi.");
                     }
                 });
             }
-
         });
 
+
+
+
+        @*Close Modal Start*@
+        $("#closeModalIcon").click(function () {
+            $('#myModal').modal('hide');
+        });
+        $("#closeModal2").click(function () {
+            $('#myModal').modal('hide');
+        });
+        @*Close Modal End*@
+
+
+        @*Delete Start*@
+        $('.changeStatu').click(function () {
+            var postId = $(this).data('post-id');
+            togglePostStatus(postId);
+        });
+        function togglePostStatus(postId) {
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Post/Delete",
+                data: { postId: postId },
+                success: function (response) {
+                    console.log(response);
+                    Swal.fire({
+                        icon: response ? 'success' : 'error',
+                        title: response ? 'Başarılı' : 'Kaldırıldı',
+                        text: response ? 'Blog Yayına Alındı!' : 'Blog Yayından Kaldırıldı!',
+                    }).then(() => {
+                        location.reload();
+                    });
+
+                },
+                error: function (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An error occurred while updating post status.',
+                    });
+                }
+            });
+        }
+        @*Delete End*@
     </script>
 
 
