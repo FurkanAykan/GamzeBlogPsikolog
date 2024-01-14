@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\Theme\sass-cache\93baba3d74e776347d5d8cca18d25fb34da585bc\style.scssc" />
+    <None Include="wwwroot\Theme\sass-cache\93baba3d74e776347d5d8cca18d25fb34da585bc\_fonts.scssc" />
+    <None Include="wwwroot\Theme\sass-cache\93baba3d74e776347d5d8cca18d25fb34da585bc\_mixin.scssc" />
+    <None Include="wwwroot\Theme\sass-cache\93baba3d74e776347d5d8cca18d25fb34da585bc\_responsive.scssc" />
+    <None Include="wwwroot\Theme\sass-cache\93baba3d74e776347d5d8cca18d25fb34da585bc\_theme_color.scssc" />
+    <None Include="wwwroot\Theme\sass-cache\93baba3d74e776347d5d8cca18d25fb34da585bc\_variables.scssc" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="jQuery" Version="3.7.1" />
+    <PackageReference Include="jQuery.Validation" Version="1.19.5" />
+    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter" Version="8.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Admin\Data\" />
+    <Folder Include="Areas\Admin\Models\" />
+    <Folder Include="uploads\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="WebLibrary">
+      <HintPath>..\..\..\..\..\C#-MVC-LAZIM\WebLibrary.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

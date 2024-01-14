@@ -1,0 +1,204 @@
+﻿@model List<BlogPostViewModel>
+@{
+    ViewData["Title"] = "Blog Ekleme";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+<style>
+    /* Add this CSS to make the modal full-width */
+    .modal-fullpage {
+        width: 100vw;
+        margin: 0;
+        max-width: 100%;
+    }
+
+    /* Optional: Set a maximum width for the modal content */
+    .modal-content {
+        max-width: 90%; /* Adjust this value as needed */
+        width: 100%;
+        overflow: hidden;
+        margin: auto; /* This centers the modal content horizontally */
+        margin-top: 25px;
+    }
+</style>
+@* List Start *@
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-12 grid-margin stretch-card">
+                <!-- Updated the class from "col-lg-6" to "col-12" to take up the full width -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h4 class="card-title">Blog Listesi</h4>
+                            </div>
+                            <div class="col-md-6 d-flex justify-content-end">
+                                <input type="button" class="btn btn-gradient-primary" id="btnsubmit" value="Kaydet" />
+                            </div>
+                        </div>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Blog Başlığı</th>
+                                    <th>Blog Oluşturulma Tarihi</th>
+                                    <th>Durumu</th>
+                                    <th>Güncelle</th>
+                                    <th>Aktif/Pasif</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach(var post in Model)
+                                {
+                                    <tr>
+                                        <td>@post.BlogTitle</td>
+                                        <td>@post.CreateDate.ToShortDateString()</td>
+                                        <td><label class="badge badge-@(post.Status?"success":"danger")">@(post.Status ? "Yayında" : "Yayında Değil")</label></td>
+                                        <td><input type="button" class="mdi mdi-tooltip-edit" id="btnsubmit" value="Güncelle" /></td>
+                                        <td><button class="btn btn-@(post.Status ? "danger" : "success")">@(post.Status ? "Yayından Kaldır" : "Yayına Al")</button></td>
+                                    </tr>
+                                }
+                               
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@* List End *@
+
+@* Modal Start *@
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullpage" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="col-12 grid-margin stretch-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title"> Blog Ekleme</h4>
+                            <br/>
+                            
+                            <form class="forms-sample">
+                                <div class="form-group">
+                                    <label for="blogTitle">Blog Başlığı</label>
+                                    <input type="text" class="form-control" id="blogTitle" placeholder="Blog Başlığı">
+                                </div>
+                                <div class="form-group">
+                                    <label for="blogTag">Blog Tagları  <span style="color:#cb7fff;">  (Tagleri  ' , '  ile ayırarak yazınız.)</span></label>
+                                    <input type="text" class="form-control" id="blogTag" placeholder="Blog Tag">
+                                </div>
+                                <div class="form-group">
+                                    <label for="blogStatu">Blog Statüsü</label>
+                                    <select class="form-control" id="blogStatu">
+                                        <option value="True">Aktif</option>
+                                        <option value="False">Pasif</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Resim Yükle</label>
+                                    <input type="file" name="img[]" id="fileInput" class="file-upload-default">
+                                    <div class="input-group col-xs-12">
+                                        <input id="blogImage" type="text" class="form-control file-upload-info" disabled placeholder="Resim Yükle">
+                                        <span class="input-group-append">
+                                            <button class="file-upload-browse btn btn-gradient-primary" type="button" onclick="document.getElementById('fileInput').click()">Yükle</button>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="blogContent">Blog İçeriği</label>
+                                    <textarea class="form-control" id="blogContent" rows="4"></textarea>
+                                </div>
+                                <input type="button" class="btn btn-gradient-primary mr-2" id="btnBlogSubmit" value="Kaydet" />
+                                <button class="btn btn-light">İptal</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@* Modal End *@
+
+
+@section Scripts{
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+
+        $(document).ready(function () {
+            $("#btnsubmit").click(function () {
+                $('#myModal').modal('show');
+            });
+
+            $('#btnBlogSubmit').click(function () {
+                var fileInput = document.getElementById('fileInput');
+                var file = fileInput.files[0];
+
+                var formData = new FormData();
+
+                if (file) {
+                    formData.append('file', file);
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/Admin/Post/UploadImage",
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        success: function (imagePath) {
+                            handleBlogPost(imagePath);
+                        },
+                        error: function (error) {
+                            alert("Fotoğraf yüklenirken bir hata oluştu.");
+                        }
+                    });
+                } else {
+                    handleBlogPost(null);
+                }
+            });
+
+            function handleBlogPost(imagePath) {
+                var blogTitle = $("#blogTitle").val();
+                var blogContent = $('#blogContent').val();
+                var blogTag = $("#blogTag").val();
+                var blogStatu = ($("#blogStatu").val() === "True");
+              
+                var postData = {
+                    BlogTitle: blogTitle,
+                    BlogTag: blogTag,
+                    Status: blogStatu,
+                    BlogImage: imagePath,
+                    BlogContent: blogContent
+                };
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/Post/AddPost",
+                    data: JSON.stringify(postData),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        $('#myModal').modal('hide');
+                        alert("Blog başarıyla eklendi!");
+                    },
+                    error: function (error) {
+                        alert("Bir hata oluştu. Blog eklenemedi.");
+                    }
+                });
+            }
+
+        });
+
+    </script>
+
+
+}
+
+
