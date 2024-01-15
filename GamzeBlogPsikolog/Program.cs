@@ -6,7 +6,7 @@ using System.Configuration;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddExtensins();
 //builder.Services.AddDbContext<GamzeBlogContext>();
-builder.Services.AddDbContext<GamzeBlogContext>(context => context.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<GamzeBlogContext>(context => context.UseSqlServer(builder.Configuration.GetConnectionString("ConnStr")));
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 

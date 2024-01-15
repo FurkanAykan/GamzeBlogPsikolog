@@ -23,6 +23,7 @@ namespace GamzeBlogPsikolog.Services
                 Comment newComment = _mapper.Map<Comment>(comment);
                 newComment.CommentImage = "baseimage";
                 newComment.CommentStatus = false;
+                newComment.CreateDate = DateTime.Now;
                 await _commentRepo.Add(newComment);
                 return "Ok";
             }
@@ -32,6 +33,13 @@ namespace GamzeBlogPsikolog.Services
                 return ex.Message;
             }
             
+        }
+
+        public async Task<List<CommentViewModel>> GetAllCommentByPostId(int postId)
+        {
+            var commentlist=await _commentRepo.GetAll(x=>x.BlogPostId == postId,null,x=>x.ReplyComments);
+            List<CommentViewModel> mappedCommentList = _mapper.Map<List<CommentViewModel>>(commentlist);
+            return mappedCommentList;
         }
     }
 }
