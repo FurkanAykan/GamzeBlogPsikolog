@@ -7,6 +7,8 @@ using GamzeBlogPsikolog.Models;
 using GamzeBlogPsikolog.Services;
 using Microsoft.AspNetCore.Mvc;
 using PagedList;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 
 namespace GamzeBlogPsikolog.Areas.Admin.Controllers
 {
@@ -21,7 +23,6 @@ namespace GamzeBlogPsikolog.Areas.Admin.Controllers
             this.mapper = mapper;
             this.blogPostService = blogPostService;
         }
-
         [Area("Admin")]
         [HttpGet]
         public async Task<IActionResult> Index(int? id)
@@ -54,8 +55,6 @@ namespace GamzeBlogPsikolog.Areas.Admin.Controllers
                     alert.Message = "Kayıt Başarıyla Güncellendi.";
                 }
             }
-            
-            
             return Json(alert);
         }
         [HttpPost]
@@ -64,26 +63,58 @@ namespace GamzeBlogPsikolog.Areas.Admin.Controllers
         {
             if (file != null && file.Length > 0)
             {
-                // wwwroot dizini içindeki uploads klasörüne kaydedelim
+                // wwwroot dizini içindeki uploads ve thumb klasörlerini oluştur
                 var uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "uploads");
+                var thumbFolder = Path.Combine(webHostEnvironment.WebRootPath, "thumb");
 
-                // Eğer uploads klasörü yoksa oluştur
                 if (!Directory.Exists(uploadsFolder))
                 {
                     Directory.CreateDirectory(uploadsFolder);
                 }
-                var imagePath = Path.Combine(uploadsFolder, file.FileName);
+
+                if (!Directory.Exists(thumbFolder))
+                {
+                    Directory.CreateDirectory(thumbFolder);
+                }
+
+                var fileName = Path.GetFileName(file.FileName);
+                var imagePath = Path.Combine(uploadsFolder, fileName);
 
                 // Dosyayı kaydet
                 using (var stream = new FileStream(imagePath, FileMode.Create))
                 {
                     file.CopyTo(stream);
                 }
-                // Burada imagePath'i isteğe bağlı olarak "/uploads/" + file.FileName şeklinde kullanabilirsiniz
-                return Json("/uploads/" + file.FileName);
+
+                // Resmi yeniden boyutlandır
+                var thumbImagePath = Path.Combine(thumbFolder, fileName);
+                using (var image = Image.Load(imagePath))
+                {
+                    // İstenilen boyuta resmi yeniden boyutlandır
+                    var width = 100; // İstediğiniz genişlik
+                    var height = 100; // İstediğiniz yükseklik
+                    image.Mutate(x => x.Resize(new ResizeOptions
+                    {
+                        Size = new Size(width, height),
+                        Mode = ResizeMode.Max
+                    }));
+
+                    // Yeniden boyutlandırılmış resmi kaydet
+                    image.Save(thumbImagePath);
+                }
+
+                return Json(new { OriginalPath = "/uploads/" + fileName, ThumbnailPath = "/thumb/" + fileName });
             }
 
             return Json(null);
+        }
+
+        [HttpGet]
+        [Area("Admin")]
+        public async Task<IActionResult> GetData(int id)
+        {
+            var deger = await rp.GetByIdAsync(x => x.BlogId == id);
+            return Json(deger);
         }
 
 
