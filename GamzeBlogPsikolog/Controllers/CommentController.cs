@@ -18,6 +18,12 @@ namespace GamzeBlogPsikolog.Controllers
         {
             string msg= await _commentService.AddComment(model);           
             return Json(msg);
+        } 
+        [HttpPost]
+        public async Task<JsonResult> AddReplyComment(ReplyCommentViewModel model)
+        {
+            string msg = await _commentService.AddReplyComment(model);
+            return Json(msg);
         }
     }
 }
