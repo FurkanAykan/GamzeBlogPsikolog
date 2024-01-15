@@ -21,27 +21,34 @@ namespace GamzeBlogPsikolog.Services
         private readonly IMapper _mapper;
         private readonly GamzeBlogContext _context;
         private DbSet<BlogPost> _dbSet;
+        private readonly ICommentService _commentService;
 
-        public BlogPostService(IGenericRepostory<BlogPost> postory, IMapper mapper,GamzeBlogContext context)
+        public BlogPostService(IGenericRepostory<BlogPost> postory, IMapper mapper, GamzeBlogContext context, ICommentService commentService)
         {
             _postory = postory;
             _mapper = mapper;
             this._context = context;
-             _dbSet = _context.Set<BlogPost>();
+            _dbSet = _context.Set<BlogPost>();
+            _commentService = commentService;
         }
 
         public async Task<List<BlogPostViewModel>> GetAllBlog()
         {
             var blogList = await _postory.GetAll();
             return _mapper.Map<List<BlogPostViewModel>>(blogList);
+
         }
 
         public async Task<BlogPostViewModel> GetBlogById(int id)
         {
-           var blog = await _postory.GetByIdAsync(x=>x.BlogId==id);
-            return _mapper.Map<BlogPostViewModel>(blog);
+            var blog = await _postory.GetByIdAsync(x => x.BlogId == id);
+            BlogPostViewModel mappedBlog = _mapper.Map<BlogPostViewModel>(blog);
+            List<CommentViewModel> allComment = await _commentService.GetAllCommentByPostId(id);
+           
+            mappedBlog.Comments = allComment;
+            return mappedBlog;
 
-     
+        }
         public async Task<AdminBlogList> GetAll(int pageNumber, int pageSize, Expression<Func<BlogPost, bool>> filter = null, Func<IQueryable<BlogPost>, IOrderedQueryable<BlogPost>> orderby = null, params Expression<Func<BlogPost, object>>[] includes)
         {
             IQueryable<BlogPost> query = _dbSet;
@@ -72,7 +79,7 @@ namespace GamzeBlogPsikolog.Services
             int totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
 
             var data = await query.ToListAsync();
-            List<BlogPostViewModel> blog = mapper.Map<List<BlogPostViewModel>>(data);
+            List<BlogPostViewModel> blog = _mapper.Map<List<BlogPostViewModel>>(data);
             // PageResult nesnesini oluştur ve döndür
             return new AdminBlogList
             {
