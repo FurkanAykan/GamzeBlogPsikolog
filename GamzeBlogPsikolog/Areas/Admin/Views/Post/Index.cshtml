@@ -95,7 +95,7 @@
                                             <td>@post.BlogTitle</td>
                                             <td>@post.CreateDate.ToShortDateString()</td>
                                             <td><label class="badge badge-@(post.Status?"success":"danger")">@(post.Status ? "Yayında" : "Yayında Değil")</label></td>
-                                            <td><input type="button" class="mdi mdi-tooltip-edit" id="btnsubmit" value="Güncelle" /></td>
+                                            <td><input type="submit" class="mdi mdi-tooltip-edit" id="btnEdit" onclick="blogEdit('@post.BlogId')" value="Güncelle" /></td>
                                             <td>
                                                 <button class="btn btn-@(post.Status ? "danger" : "success") changeStatu" data-post-id="@post.BlogId">
                                                     @(post.Status ? "Yayından Kaldır" : "Yayına Al")
@@ -110,7 +110,7 @@
                                             <td>@post.BlogTitle</td>
                                             <td>@post.CreateDate.ToShortDateString()</td>
                                             <td><label class="badge badge-@(post.Status?"success":"danger")">@(post.Status ? "Yayında" : "Yayında Değil")</label></td>
-                                            <td><input type="button" class="mdi mdi-tooltip-edit" id="btnsubmit" value="Güncelle" /></td>
+                                            <td><input type="submit" class="mdi mdi-tooltip-edit" id="btnEdit" onclick="blogEdit('@post.BlogId')" value="Güncelle" /></td>
                                             <td>
                                                 <button class="btn btn-@(post.Status ? "danger" : "success") changeStatu" data-post-id="@post.BlogId">
                                                     @(post.Status ? "Yayından Kaldır" : "Yayına Al")
@@ -120,7 +120,7 @@
                                     }
                                     sayi++;
                                 }
-                               
+
                             </tbody>
                         </table>
                         <div class="pagination">
@@ -174,6 +174,21 @@
                             <br />
                             <form class="forms-sample">
                                 <div class="form-group">
+                                    <label>Resim Yükle</label>
+                                    <input type="file" name="img[]" id="fileInput" class="file-upload-default" onchange="previewImage()">
+                                    <div id="imagePreview" class="mt-2" style="display: none;">
+                                        <img id="preview" src="#" alt="Resim Önizleme" style="max-width: 100px; max-height: 100px;">
+                                    </div>
+                                    <br />
+                                    <div class="input-group col-xs-12">
+                                        <input id="blogImage" type="text" class="form-control file-upload-info" disabled placeholder="Resim Yükle">
+                                        <span class="input-group-append">
+                                            <button class="file-upload-browse btn btn-gradient-primary" type="button" onclick="document.getElementById('fileInput').click()">Yükle</button>
+                                        </span>
+                                    </div>
+
+                                </div>
+                                <div class="form-group">
                                     <label for="blogTitle">Blog Başlığı</label>
                                     <input type="text" class="form-control" id="blogTitle" placeholder="Blog Başlığı">
                                 </div>
@@ -188,17 +203,6 @@
                                         <option value="False">Pasif</option>
                                     </select>
                                 </div>
-                                <div class="form-group">
-                                    <label>Resim Yükle</label>
-                                    <input type="file" name="img[]" id="fileInput" class="file-upload-default">
-                                    <div class="input-group col-xs-12">
-                                        <input id="blogImage" type="text" class="form-control file-upload-info" disabled placeholder="Resim Yükle">
-                                        <span class="input-group-append">
-                                            <button class="file-upload-browse btn btn-gradient-primary" type="button" onclick="document.getElementById('fileInput').click()">Yükle</button>
-                                        </span>
-                                    </div>
-                                </div>
-
                                 <div class="form-group">
                                     <label for="blogContent">Blog İçeriği</label>
                                     @* <textarea class="form-control" id="blogContent" rows="4"></textarea> *@
@@ -216,7 +220,6 @@
 </div>
 @* Modal End *@
 
-
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -225,6 +228,33 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.min.js"></script>
     <script>
         CKEDITOR.replace('blogContent');
+
+        function blogEdit(id) {
+
+            $.ajax({
+                type: "GET",
+                url: "/Admin/Post/GetData/" + id,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (response) {
+                    console.log(response);
+
+                    $("#imagePreview").val(response.blogThumbImage);
+                    $("#blogTitle").val(response.blogTitle);
+                    $("#blogTag").val(response.blogTag);
+                    $("#blogStatu").val(response.status);
+                    $("#blogContent").val(response.blogContent);
+
+                    $("#btnBlogSubmit").val("Güncelle");
+                    $(".card-title").text("Blog Güncelle");
+                }
+            });
+            $('#myModal').modal('show');
+
+        }
+
+
         $(document).ready(function () {
             $("#btnsubmit").click(function () {
                 $('#myModal').modal('show');
@@ -246,6 +276,7 @@
                         processData: false,
                         success: function (imagePath) {
                             handleBlogPost(imagePath);
+                            console.log(imagePath);
                         },
                         error: function (error) {
                             alert("Fotoğraf yüklenirken bir hata oluştu.");
@@ -257,7 +288,6 @@
             });
             function handleBlogPost(imagePath) {
                 var blogTitle = $("#blogTitle").val();
-                // var blogContent = $('#blogContent').val();
                 var blogContent = CKEDITOR.instances.blogContent.getData();
                 var blogTag = $("#blogTag").val();
                 var blogStatu = ($("#blogStatu").val() === "True");
@@ -266,9 +296,11 @@
                     BlogTitle: blogTitle,
                     BlogTag: blogTag,
                     Status: blogStatu,
-                    BlogImage: imagePath,
+                    BlogImage: imagePath.originalPath,
+                    BlogThumbImage: imagePath.thumbnailPath,
                     BlogContent: blogContent
                 };
+                console.log(postData);
                 $.ajax({
                     type: "POST",
                     url: "/Admin/Post/AddPost",
@@ -287,13 +319,12 @@
             }
         });
 
-
-
+       
 
         @*Close Modal Start*@
-        $("#closeModalIcon").click(function () {
-            $('#myModal').modal('hide');
-        });
+            $("#closeModalIcon").click(function () {
+                $('#myModal').modal('hide');
+            });
         $("#closeModal2").click(function () {
             $('#myModal').modal('hide');
         });
@@ -301,10 +332,10 @@
 
 
         @*Delete Start*@
-        $('.changeStatu').click(function () {
-            var postId = $(this).data('post-id');
-            togglePostStatus(postId);
-        });
+            $('.changeStatu').click(function () {
+                var postId = $(this).data('post-id');
+                togglePostStatus(postId);
+            });
         function togglePostStatus(postId) {
             $.ajax({
                 type: "POST",
@@ -331,6 +362,28 @@
             });
         }
         @*Delete End*@
+        @*Resim Alanın da Fotoğrafı gösterme*@
+            function previewImage() {
+                var fileInput = document.getElementById('fileInput');
+                var preview = document.getElementById('preview');
+                var imagePreview = document.getElementById('imagePreview');
+
+                if (fileInput.files && fileInput.files[0]) {
+                    var reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        preview.src = e.target.result;
+                        imagePreview.style.display = 'block';
+                    };
+
+                    reader.readAsDataURL(fileInput.files[0]);
+                } else {
+                    preview.src = '';
+                    imagePreview.style.display = 'none';
+                }
+            }
+        @*Resim Alanın da Fotoğrafı gösterme*@
+
     </script>
 
 
