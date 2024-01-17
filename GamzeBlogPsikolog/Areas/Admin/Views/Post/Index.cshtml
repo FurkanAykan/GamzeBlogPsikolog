@@ -205,10 +205,13 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="blogContent">Blog İçeriği</label>
-                                    @* <textarea class="form-control" id="blogContent" rows="4"></textarea> *@
                                     <textarea class="form-control" id="blogContent" name="blogContent" rows="4"></textarea>
                                 </div>
                                 <input type="button" class="btn btn-gradient-primary mr-2" id="btnBlogSubmit" value="Kaydet" />
+                                <input type="button" class="btn btn-gradient-primary mr-2" id="btnBlogSubmitEdit" value="Güncelle" />
+                                <input type="hidden" id="modalBlogId" />
+                                <input type="hidden" id="orginalImagePath" />
+
                                 <button class="btn btn-light">İptal</button>
                             </form>
                         </div>
@@ -239,27 +242,116 @@
                 cache: false,
                 success: function (response) {
                     console.log(response);
+                    var statusValue = response.status === true;
+                    $("#blogStatu").val(statusValue ? "True" : "False");
 
-                    $("#imagePreview").val(response.blogThumbImage);
+                    showImagePreview(response.blogImage);
+
+                    CKEDITOR.instances['blogContent'].setData(response.blogContent);
+
                     $("#blogTitle").val(response.blogTitle);
                     $("#blogTag").val(response.blogTag);
-                    $("#blogStatu").val(response.status);
-                    $("#blogContent").val(response.blogContent);
 
-                    $("#btnBlogSubmit").val("Güncelle");
+                    $("#modalBlogId").val(response.blogId);
+                    $("#orginalImagePath").val(response.blogImage);
+
+                    $("#btnBlogSubmit").hide();
                     $(".card-title").text("Blog Güncelle");
+                    
                 }
             });
             $('#myModal').modal('show');
-
         }
 
+        @*Güncelleme İşlemi Start*@
+            $(document).ready(function () {
+                $("#btnBlogSubmitEdit").on("click", function () {
+                    var fileInput = document.getElementById('fileInput');
 
+
+                    var file = fileInput.files[0];
+                    var existingImagePath = file ? null : $("#orginalImagePath").val();
+
+                    console.log(file);
+                    console.log(existingImagePath);
+                    var formData = new FormData();
+
+                    if (existingImagePath) {
+                        formData.append('file', existingImagePath);
+                    } else {
+                        formData.append('file', file);
+                    }
+                    $.ajax({
+                        type: "POST",
+                        url: "/Admin/Post/UploadImage",
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        success: function (imagePaths) {
+                            handleBlogEdit(imagePaths);
+                        },
+                        error: function (error) {
+                            alert("Fotoğraf yüklenirken bir hata oluştu.");
+                        }
+                    });
+                });
+                function handleBlogEdit(imagePaths) {
+                    var blogId = $("#modalBlogId").val();
+                    var blogTitle = $("#blogTitle").val();
+                    var blogContent = CKEDITOR.instances['blogContent'].getData();
+                    var blogTag = $("#blogTag").val();
+                    var blogStatus = $("#blogStatu").val() === "True";
+
+                    var postDatas = {
+                        BlogId: blogId,
+                        BlogTitle: blogTitle,
+                        BlogTag: blogTag,
+                        Status: blogStatus,
+                        BlogImage: imagePaths.originalPath,
+                        BlogThumbImage: imagePaths.thumbnailPath,
+                        BlogContent: blogContent
+                    };
+                    console.log(postDatas)
+                    $.ajax({
+                        type: "POST",
+                        url: "/Admin/Post/Addpost",
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        data: JSON.stringify(postDatas),
+                        success: function (response) {
+                            $('#myModal').modal('hide');
+                            alert("Blog başarıyla eklendi!");
+                            location.reload();
+                        },
+                        error: function (error) {
+                            console.error("Güncelleme yaparken bir hata oluştu. Tekrar deneyiniz...");
+                        }
+                    });
+                }
+              
+            });
+        @*Güncelleme İşlemi End*@
+
+
+        @*Kaydet İşlemi Start*@
         $(document).ready(function () {
             $("#btnsubmit").click(function () {
+                $("#btnBlogSubmitEdit").hide();
+                $("#btnBlogSubmit").show();
+                $(".card-title").text("Blog Kaydet");
+                document.getElementById('fileInput').value = "";
+                document.getElementById('preview').src = "";
+                document.getElementById('blogImage').value = "";
+                document.getElementById('blogTitle').value = "";
+                document.getElementById('blogTag').value = "";
+                document.getElementById('blogStatu').value = "";
+                document.getElementById('blogContent').value = "";
+                document.getElementById('modalBlogId').value = "";
+                document.getElementById('orginalImagePath').value = "";
                 $('#myModal').modal('show');
             });
             $('#btnBlogSubmit').click(function () {
+
                 var fileInput = document.getElementById('fileInput');
                 var file = fileInput.files[0];
 
@@ -276,7 +368,7 @@
                         processData: false,
                         success: function (imagePath) {
                             handleBlogPost(imagePath);
-                            console.log(imagePath);
+                            
                         },
                         error: function (error) {
                             alert("Fotoğraf yüklenirken bir hata oluştu.");
@@ -292,6 +384,8 @@
                 var blogTag = $("#blogTag").val();
                 var blogStatu = ($("#blogStatu").val() === "True");
 
+                
+
                 var postData = {
                     BlogTitle: blogTitle,
                     BlogTag: blogTag,
@@ -300,7 +394,7 @@
                     BlogThumbImage: imagePath.thumbnailPath,
                     BlogContent: blogContent
                 };
-                console.log(postData);
+               
                 $.ajax({
                     type: "POST",
                     url: "/Admin/Post/AddPost",
@@ -318,16 +412,15 @@
                 });
             }
         });
-
-       
+        @*Kaydet İşlemi End*@
 
         @*Close Modal Start*@
             $("#closeModalIcon").click(function () {
                 $('#myModal').modal('hide');
             });
-        $("#closeModal2").click(function () {
-            $('#myModal').modal('hide');
-        });
+            $("#closeModal2").click(function () {
+                $('#myModal').modal('hide');
+            });
         @*Close Modal End*@
 
 
@@ -383,6 +476,27 @@
                 }
             }
         @*Resim Alanın da Fotoğrafı gösterme*@
+
+        @*Resim önizleme fonksiyonu*@
+            function showImagePreview(imagePath) {
+                var imagePreview = document.getElementById('imagePreview');
+                var blogImageInput = document.getElementById('blogImage');
+
+                if (imagePath) {
+                    // Resim varsa önizleme alanını göster
+                    imagePreview.style.display = 'block';
+                    // Resmi görüntüle
+                    $('#preview').attr('src', imagePath);
+                    // Resim yolu bilgisini input alanına yaz
+                    blogImageInput.value = imagePath;
+                } else {
+                    // Resim yoksa önizleme alanını gizle
+                    imagePreview.style.display = 'none';
+                    // Input alanını temizle
+                    blogImageInput.value = '';
+                }
+            }
+        @*Resim önizleme fonksiyonu End*@
 
     </script>
 
