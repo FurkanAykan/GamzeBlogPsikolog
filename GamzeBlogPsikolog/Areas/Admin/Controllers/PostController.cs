@@ -5,6 +5,7 @@ using GamzeBlogPsikolog.Entity.Interfaces;
 using GamzeBlogPsikolog.EntityViewModels;
 using GamzeBlogPsikolog.Models;
 using GamzeBlogPsikolog.Services;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using PagedList;
 using SixLabors.ImageSharp;
@@ -59,8 +60,9 @@ namespace GamzeBlogPsikolog.Areas.Admin.Controllers
         }
         [HttpPost]
         [Area("Admin")]
-        public IActionResult UploadImage(IFormFile file, [FromServices] IWebHostEnvironment webHostEnvironment)
+        public IActionResult UploadImage(int id,IFormFile file, [FromServices] IWebHostEnvironment webHostEnvironment)
         {
+           
             if (file != null && file.Length > 0)
             {
                 // wwwroot dizini içindeki uploads ve thumb klasörlerini oluştur
@@ -108,7 +110,7 @@ namespace GamzeBlogPsikolog.Areas.Admin.Controllers
 
             return Json(null);
         }
-
+     
         [HttpGet]
         [Area("Admin")]
         public async Task<IActionResult> GetData(int id)
