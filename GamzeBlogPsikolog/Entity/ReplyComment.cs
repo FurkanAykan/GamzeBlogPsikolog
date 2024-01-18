@@ -12,7 +12,6 @@ namespace GamzeBlogPsikolog.Entity
         public string ReplyCommentEmail { get; set; }
         public string ReplyCommentImage { get; set; }
         public DateTime ReplyCreateDate { get; set; }
-        public int CommentId { get; set; }
-        public Comment Comment { get; set; }
+        public int CommentId { get; set; }     
     }
 }

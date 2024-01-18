@@ -1,0 +1,122 @@
+﻿@model List<CommentViewModel>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="main-panel">
+
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Yorumlar</h4>            
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>İsim</th>
+                            <th>Email</th>
+                            <th>Yorum</th>
+                            <th>Durum</th>                            
+                            <th>Kontrol</th>                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var comment in Model)
+                        {
+                            <tr>
+                                <td>@comment.CommentUserName</td>
+                                <td>@comment.CommentEmail</td>
+                                <td>@comment.CommentContent</td>
+                                <td><label class="badge badge-@(@comment.CommentStatus?"success":"danger")">@comment.CommentStatus</label></td>
+                                <td>
+                                    <button type="button" class="btn btn-primary" onclick="getComment('@comment.CommentId')">
+                                       İncele
+                                    </button>
+                                </td>
+                                
+                            </tr>
+                        }                       
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Yorum</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="modalForm" class="forms-sample">
+                    <div class="form-group">
+                        <label for="modalInputUsername">İsim</label>
+                        <input type="text" class="form-control" id="modalInputUsername" placeholder="İsim">
+                    </div>
+                    <div class="form-group">
+                        <label for="modalInputEmail">Email</label>
+                        <input type="email" class="form-control" id="modalInputEmail" placeholder="Email">
+                    </div>
+                    <div class="form-group">
+                        <label for="modalInputPassword">Yorum</label>
+                        <input type="text" class="form-control" id="modalInputContent" placeholder="Yorum">
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="modalInputStatus" id="modalInputStatusTrue" value="true">
+                        <label class="form-check-success" for="modalInputStatusTrue">
+                            True
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-danger" type="radio" name="modalInputStatus" id="modalInputStatusFalse" value="false">
+                        <label class="form-check-label" for="modalInputStatusFalse">
+                            False
+                        </label>
+                    </div>
+                   
+                    <div class="form-check form-check-flat form-check-primary">
+                        <label class="form-check-label">
+                            <input type="checkbox" class="form-check-input"> Remember me
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-gradient-primary mr-2">Kaydet</button>
+                    <button type="button" class="btn btn-light" data-dismiss="modal">Vazgeç</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+<script>
+
+document.getElementById('modalForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+  });
+    function getComment(id) {      
+            $.ajax({
+                type: "GET",
+                url: "/Admin/Comment/GetCommentById/" + id,                          
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (response) {                  
+                    $('#modalInputUsername').val(response.commentUserName);
+                    $('#modalInputEmail').val(response.commentEmail);
+                    $('#modalInputContent').val(response.commentContent);
+                    $('#modalInputStatus').val(response.commentStatus);
+                    $('#exampleModal').modal('show')
+                }
+            });
+         
+    }
+
+       
+</script>
+}
