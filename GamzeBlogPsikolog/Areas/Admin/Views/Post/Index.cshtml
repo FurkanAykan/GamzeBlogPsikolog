@@ -95,7 +95,7 @@
                                             <td>@post.BlogTitle</td>
                                             <td>@post.CreateDate.ToShortDateString()</td>
                                             <td><label class="badge badge-@(post.Status?"success":"danger")">@(post.Status ? "Yayında" : "Yayında Değil")</label></td>
-                                            <td><input type="submit" class="mdi mdi-tooltip-edit" id="btnEdit" onclick="blogEdit('@post.BlogId')" value="Güncelle" /></td>
+                                            <td><input type="submit" class="btn btn-warning" id="btnEdit" onclick="blogEdit('@post.BlogId')" value="Güncelle" /></td>
                                             <td>
                                                 <button class="btn btn-@(post.Status ? "danger" : "success") changeStatu" data-post-id="@post.BlogId">
                                                     @(post.Status ? "Yayından Kaldır" : "Yayına Al")
@@ -110,7 +110,7 @@
                                             <td>@post.BlogTitle</td>
                                             <td>@post.CreateDate.ToShortDateString()</td>
                                             <td><label class="badge badge-@(post.Status?"success":"danger")">@(post.Status ? "Yayında" : "Yayında Değil")</label></td>
-                                            <td><input type="submit" class="mdi mdi-tooltip-edit" id="btnEdit" onclick="blogEdit('@post.BlogId')" value="Güncelle" /></td>
+                                            <td><input type="submit" class="btn btn-warning" id="btnEdit" onclick="blogEdit('@post.BlogId')" value="Güncelle" /></td>
                                             <td>
                                                 <button class="btn btn-@(post.Status ? "danger" : "success") changeStatu" data-post-id="@post.BlogId">
                                                     @(post.Status ? "Yayından Kaldır" : "Yayına Al")
@@ -158,7 +158,7 @@
 @* List End *@
 
 @* Modal Start *@
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog modal-fullpage" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -188,6 +188,7 @@
                                     </div>
 
                                 </div>
+
                                 <div class="form-group">
                                     <label for="blogTitle">Blog Başlığı</label>
                                     <input type="text" class="form-control" id="blogTitle" placeholder="Blog Başlığı">
@@ -211,6 +212,7 @@
                                 <input type="button" class="btn btn-gradient-primary mr-2" id="btnBlogSubmitEdit" value="Güncelle" />
                                 <input type="hidden" id="modalBlogId" />
                                 <input type="hidden" id="orginalImagePath" />
+                                <input type="hidden" id="orginalThumbImagePath" />
 
                                 <button class="btn btn-light">İptal</button>
                             </form>
@@ -231,8 +233,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.min.js"></script>
     <script>
         CKEDITOR.replace('blogContent');
-
+        $(document).ready(function () {
+            $('#myModal').on('click', function (event) {
+                // Modal dışına tıklanmasını engelle
+                if (event.target.id === 'myModal') {
+                    event.stopPropagation();
+                }
+            });
+        });
         function blogEdit(id) {
+            $("#btnBlogSubmitEdit").show();
             $.ajax({
                 type: "GET",
                 url: "/Admin/Post/GetData/" + id,
@@ -240,23 +250,18 @@
                 dataType: "json",
                 cache: false,
                 success: function (response) {
-                    console.log(response);
                     var statusValue = response.status === true;
                     $("#blogStatu").val(statusValue ? "True" : "False");
-
                     showImagePreview(response.blogImage);
-
                     CKEDITOR.instances['blogContent'].setData(response.blogContent);
-
                     $("#blogTitle").val(response.blogTitle);
                     $("#blogTag").val(response.blogTag);
-
                     $("#modalBlogId").val(response.blogId);
                     $("#orginalImagePath").val(response.blogImage);
-
+                    $("#orginalThumbImagePath").val(response.blogThumbImage);
                     $("#btnBlogSubmit").hide();
                     $(".card-title").text("Blog Güncelle");
-                    
+
                 }
             });
             $('#myModal').modal('show');
@@ -266,20 +271,9 @@
             $(document).ready(function () {
                 $("#btnBlogSubmitEdit").on("click", function () {
                     var fileInput = document.getElementById('fileInput');
-
-
                     var file = fileInput.files[0];
-                    var existingImagePath = file ? null : $("#orginalImagePath").val();
-
-                    console.log(file);
-                    console.log(existingImagePath);
                     var formData = new FormData();
-
-                    if (existingImagePath) {
-                        formData.append('file', existingImagePath);
-                    } else {
-                        formData.append('file', file);
-                    }
+                    formData.append('file', file);
                     $.ajax({
                         type: "POST",
                         url: "/Admin/Post/UploadImage",
@@ -295,6 +289,7 @@
                     });
                 });
                 function handleBlogEdit(imagePaths) {
+                    console.log(imagePaths);
                     var blogId = $("#modalBlogId").val();
                     var blogTitle = $("#blogTitle").val();
                     var blogContent = CKEDITOR.instances['blogContent'].getData();
@@ -306,8 +301,8 @@
                         BlogTitle: blogTitle,
                         BlogTag: blogTag,
                         Status: blogStatus,
-                        BlogImage: imagePaths.originalPath,
-                        BlogThumbImage: imagePaths.thumbnailPath,
+                        BlogImage: imagePaths !== null ? imagePaths.originalPath : $("#orginalImagePath").val(),
+                        BlogThumbImage: imagePaths !== null ? imagePaths.thumbnailPath : $("#orginalThumbImagePath").val(),
                         BlogContent: blogContent
                     };
                     console.log(postDatas)
@@ -327,99 +322,111 @@
                         }
                     });
                 }
-              
+
             });
         @*Güncelleme İşlemi End*@
 
 
         @*Kaydet İşlemi Start*@
-        $(document).ready(function () {
-            $("#btnsubmit").click(function () {
-                $("#btnBlogSubmitEdit").hide();
-                $("#btnBlogSubmit").show();
-                $(".card-title").text("Blog Kaydet");
-                document.getElementById('fileInput').value = "";
-                document.getElementById('preview').src = "";
-                document.getElementById('blogImage').value = "";
-                document.getElementById('blogTitle').value = "";
-                document.getElementById('blogTag').value = "";
-                document.getElementById('blogStatu').value = "";
-                document.getElementById('blogContent').value = "";
-                document.getElementById('modalBlogId').value = "";
-                document.getElementById('orginalImagePath').value = "";
-                $('#myModal').modal('show');
-            });
-            $('#btnBlogSubmit').click(function () {
+            $(document).ready(function () {
+                $("#btnsubmit").click(function () {
+                    $("#btnBlogSubmitEdit").hide();
+                    $("#btnBlogSubmit").show();
+                    $(".card-title").text("Blog Kaydet");
+                    previewImage();
+                    // document.getElementById('fileInput').value = null;
+                    document.getElementById('preview').src = "";
+                    document.getElementById('blogImage').value = "";
+                    document.getElementById('blogTitle').value = "";
+                    document.getElementById('blogTag').value = "";
+                    document.getElementById('blogStatu').value = "";
+                    CKEDITOR.instances['blogContent'].setData("");
 
-                var fileInput = document.getElementById('fileInput');
-                var file = fileInput.files[0];
+                    document.getElementById('modalBlogId').value = "";
+                    document.getElementById('orginalImagePath').value = "";
+                    $('#myModal').modal('show');
+                });
+                $('#btnBlogSubmit').click(function () {
 
-                var formData = new FormData();
+                    var fileInput = document.getElementById('fileInput');
+                    var file = fileInput.files[0];
 
-                if (file) {
-                    formData.append('file', file);
+                    var formData = new FormData();
 
-                    $.ajax({
-                        type: "POST",
-                        url: "/Admin/Post/UploadImage",
-                        data: formData,
-                        contentType: false,
-                        processData: false,
-                        success: function (imagePath) {
-                            handleBlogPost(imagePath);
-                            
-                        },
-                        error: function (error) {
-                            alert("Fotoğraf yüklenirken bir hata oluştu.");
-                        }
-                    });
-                } else {
-                    handleBlogPost(null);
-                }
-            });
-            function handleBlogPost(imagePath) {
-                var blogTitle = $("#blogTitle").val();
-                var blogContent = CKEDITOR.instances.blogContent.getData();
-                var blogTag = $("#blogTag").val();
-                var blogStatu = ($("#blogStatu").val() === "True");
+                    if (file) {
+                        formData.append('file', file);
 
-                
+                        $.ajax({
+                            type: "POST",
+                            url: "/Admin/Post/UploadImage",
+                            data: formData,
+                            contentType: false,
+                            processData: false,
+                            success: function (imagePath) {
+                                handleBlogPost(imagePath);
 
-                var postData = {
-                    BlogTitle: blogTitle,
-                    BlogTag: blogTag,
-                    Status: blogStatu,
-                    BlogImage: imagePath.originalPath,
-                    BlogThumbImage: imagePath.thumbnailPath,
-                    BlogContent: blogContent
-                };
-               
-                $.ajax({
-                    type: "POST",
-                    url: "/Admin/Post/AddPost",
-                    data: JSON.stringify(postData),
-                    contentType: "application/json; charset=utf-8",
-                    dataType: "json",
-                    success: function (response) {
-                        $('#myModal').modal('hide');
-                        alert("Blog başarıyla eklendi!");
-                        location.reload();
-                    },
-                    error: function (error) {
-                        alert("Bir hata oluştu. Blog eklenemedi.");
+                            },
+                            error: function (error) {
+                                alert("Fotoğraf yüklenirken bir hata oluştu.");
+                            }
+                        });
+                    } else {
+                        handleBlogPost(null);
                     }
                 });
-            }
-        });
+                function handleBlogPost(imagePath) {
+                    var blogTitle = $("#blogTitle").val();
+                    var blogContent = CKEDITOR.instances.blogContent.getData();
+                    var blogTag = $("#blogTag").val();
+                    var blogStatu = ($("#blogStatu").val() === "True");
+
+                    var postData = {
+                        BlogTitle: blogTitle,
+                        BlogTag: blogTag,
+                        Status: blogStatu,
+                        BlogImage: imagePath.originalPath,
+                        BlogThumbImage: imagePath.thumbnailPath,
+                        BlogContent: blogContent
+                    };
+                    $.ajax({
+                        type: "POST",
+                        url: "/Admin/Post/AddPost",
+                        data: JSON.stringify(postData),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (response) {
+                            $('#myModal').modal('hide');
+                            alert("Blog başarıyla eklendi!");
+                            location.reload();
+                        },
+                        error: function (error) {
+                            alert("Bir hata oluştu. Blog eklenemedi.");
+                        }
+                    });
+                }
+            });
         @*Kaydet İşlemi End*@
+
+            function previewImage() {
+                // Dosya adını al ve göster
+                var fileName = document.getElementById('fileInput').value.split("\\").pop();
+                document.getElementById('fileName').innerHTML = fileName;
+
+                // Resim önizlemesini göster
+                document.getElementById('imagePreview').style.display = 'block';
+
+                // Dosya giriş alanını gizle ve temizle
+                document.getElementById('fileInput').style.display = 'none';
+                document.getElementById('fileInput').value = "";
+            }
 
         @*Close Modal Start*@
             $("#closeModalIcon").click(function () {
                 $('#myModal').modal('hide');
             });
-            $("#closeModal2").click(function () {
-                $('#myModal').modal('hide');
-            });
+        $("#closeModal2").click(function () {
+            $('#myModal').modal('hide');
+        });
         @*Close Modal End*@
 
 
