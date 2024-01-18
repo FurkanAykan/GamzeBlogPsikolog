@@ -31,10 +31,10 @@ namespace GamzeBlogPsikolog.Services
             }
             catch (Exception ex)
             {
-                
+
                 return ex.Message;
             }
-            
+
         }
 
         public async Task<string> AddReplyComment(ReplyCommentViewModel replyComment)
@@ -55,11 +55,25 @@ namespace GamzeBlogPsikolog.Services
             }
         }
 
-        public async Task<List<CommentViewModel>> GetAllCommentByPostId(int postId)
+        public async Task<List<CommentViewModel>> GetAllCommentAdmin()
         {
-            var commentlist=await _commentRepo.GetAll(x=>x.BlogPostId == postId && x.CommentStatus==true,null,x=>x.ReplyComments);
+            var commentlist = await _commentRepo.GetAll(null, null, x => x.ReplyComments);
             List<CommentViewModel> mappedCommentList = _mapper.Map<List<CommentViewModel>>(commentlist);
             return mappedCommentList;
+        }
+
+        public async Task<List<CommentViewModel>> GetAllCommentByPostId(int postId)
+        {
+            var commentlist = await _commentRepo.GetAll(x => x.BlogPostId == postId && x.CommentStatus == true, null, x => x.ReplyComments);
+            List<CommentViewModel> mappedCommentList = _mapper.Map<List<CommentViewModel>>(commentlist);
+            return mappedCommentList;
+        }
+
+        public async Task<CommentViewModel> GetCommentByIdAdmin(int id)
+        {
+            var comment = await _commentRepo.GetByIdAsync(x=>x.CommentId==id, null, x => x.ReplyComments);
+            CommentViewModel mappedComment = _mapper.Map<CommentViewModel>(comment);
+            return mappedComment;
         }
     }
 }

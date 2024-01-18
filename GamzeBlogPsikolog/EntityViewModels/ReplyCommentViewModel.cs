@@ -12,6 +12,6 @@ namespace GamzeBlogPsikolog.EntityViewModels
         public string ReplyCommentImage { get; set; }
         public DateTime ReplyCreateDate { get; set; }
         public int CommentId { get; set; }
-        public CommentViewModel Comment { get; set; }
+       
     }
 }
