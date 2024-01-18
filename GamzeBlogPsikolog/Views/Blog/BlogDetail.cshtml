@@ -81,7 +81,8 @@
                                     <label>Email</label>
                                 </div>
                             </div>
-
+                            <div  id="replyContent"></div>
+                            <div style="display:none" id="replyContentId"></div>
                             <div class="col-12">
                                 <div class="group">
                                     <textarea name="message" id="message" required></textarea>
@@ -92,6 +93,7 @@
                             </div>
                             <div class="col-12">
                                 <button type="submit" id="submitComment" class="btn original-btn">Gönder</button>
+                                <button type="submit" id="cancelReply" style="display:none" class="btn original-btn">Vazgeç</button>
                             </div>
                         </div>
                         <div style="display:none" id="infodiv" class="alert alert-success" role="alert">
@@ -107,10 +109,8 @@
                     <ol>
                         @foreach (var comment in Model.Comments)
                         {
-
-
                             <!-- Single Comment Area -->
-                            <li class="single_comment_area">
+                            <li class="single_comment_area" id="comment-@comment.CommentId">
                                 <!-- Comment Content -->
                                 <div class="comment-content d-flex">
                                     <!-- Comment Author -->
@@ -120,9 +120,9 @@
                                     <!-- Comment Meta -->
                                     <div class="comment-meta">
                                         <a href="#" class="post-date">@comment.CreateDate.ToString("g")</a>
-                                        <p><a href="#" class="post-author">@comment.CommentUserName</a></p>
+                                        <p>@comment.CommentUserName</p>
                                         <p>@comment.CommentContent</p>
-                                        <a href="#" class="comment-reply">Yanıtla</a>
+                                        <a href="#" class="comment-reply" onclick="toggleReplyForm('@comment.CommentId', '@comment.CommentUserName')">Yanıtla</a>
                                     </div>
                                 </div>
                                 @foreach (var replyCo in comment.ReplyComments)
@@ -140,18 +140,16 @@
                                                     <a href="#" class="post-date">@replyCo.ReplyCreateDate.ToString("g")</a>
                                                     <p><a href="#" class="post-author">@replyCo.ReplyCommentUserName</a></p>
                                                     <p>@replyCo.ReplyCommentContent</p>
-                                                  
                                                 </div>
                                             </div>
                                         </li>
                                     </ol>
                                 }
-                               
                             </li>
-
                         }
                     </ol>
                 </div>
+            
 
                 
             </div>
@@ -281,6 +279,32 @@
 <!-- ##### Single Blog Area End ##### -->
 @section Scripts {
     <script>
+        // Yanıtla butonlarına tıklama olayını dinle
+        document.querySelectorAll('.comment-reply').forEach(function (button) {
+            button.addEventListener('click', function (e) {
+                e.preventDefault();
+                var commentForm = document.getElementById('commentForm');
+                var commentId = this.closest('li').id; // İlgili yorumun ID'sini al
+                var pureCommentId = commentId.replace('comment-', ''); // "comment-" yazısını kaldır
+                document.getElementById('replyContentId').innerText = pureCommentId;
+                var replyContent = this.parentElement.querySelector('p').innerText; // Yanıtlanacak yorumun içeriği
+                commentForm.scrollIntoView({ behavior: 'smooth', block: 'center' }); // Formu ekranda ortala
+                document.getElementById('cancelReply').style.display = 'inline-block'; // Vazgeç butonunu göster
+                document.getElementById('replyContent').innerText = 'Kişiye cevap veriliyor: ' + replyContent; // Yanıtlanacak yorumu göster
+            });
+        });
+  
+
+        // Vazgeç butonuna tıklama olayını dinle
+        document.getElementById('cancelReply').addEventListener('click', function (e) {
+            e.preventDefault();
+            var commentForm = document.getElementById('commentForm');
+            var messageInput = commentForm.querySelector('textarea[name="message"]');
+            messageInput.value = ''; // Yorumu temizle
+            this.style.display = 'none'; // Vazgeç butonunu gizle
+            document.getElementById('replyContent').innerText = ''; // Yanıtlanacak yorumu temizle
+            document.getElementById('replyContentId').innerText = '';
+        });
         $(document).ready(function () {
             $('#commentForm').submit(function (e) {
                 e.preventDefault(); // Formun normal submit işlemini engelle
@@ -290,7 +314,72 @@
                 var emailValue = $('#email').val().trim();
                 var messageValue = $('#message').val().trim();
                 var blogId = $('#blogId').val().trim();
+                var commentId = $('#replyContentId').text().trim();
+     
+                if (commentId == "") {
+                    var formData = {
+                        CommentUserName: nameValue,
+                        CommentEmail: emailValue,
+                        CommentContent: messageValue,
+                        BlogPostId: blogId
+                    };
 
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '/Comment/AddComment',
+                        data: formData,
+                        success: function (response) {
+
+                            if (response == "Ok") {
+                                $('#info').text('Yorumunuz alınmıştır');
+                            }
+                            else {
+                                $('#info').text('Bir Hata Oluştu Tekrar Deneyiniz');
+                            }
+                            $('#name').val("");
+                            $('#email').val("");
+                            $('#message').val("");
+                            $('#infodiv').show();
+                        },
+                        error: function (error) {
+
+                            console.error('Hata:', error);
+                        }
+                    });
+                }
+                else {                   
+                    var formData = {
+                        ReplyCommentUserName: nameValue,
+                        ReplyCommentEmail: emailValue,
+                        ReplyCommentContent: messageValue,
+                        CommentId: commentId
+                    };
+
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '/Comment/AddReplyComment',
+                        data: formData,
+                        success: function (response) {
+
+                            if (response == "Ok") {
+                                $('#info').text('Yorumunuz alınmıştır');
+                            }
+                            else {
+                                $('#info').text('Bir Hata Oluştu Tekrar Deneyiniz');
+                            }
+                            $('#name').val("");
+                            $('#email').val("");
+                            $('#message').val("");
+                            $('#infodiv').show();
+                        },
+                        error: function (error) {
+
+                            console.error('Hata:', error);
+                        }
+                    });
+                }
                 // Boş input kontrolü
                 if (nameValue === '' || emailValue === '' || messageValue === '') {
                     alert('Lütfen tüm alanları doldurun.');
@@ -298,36 +387,7 @@
                 }
 
                 // Form verilerini al
-                var formData = {
-                    CommentUserName: nameValue,
-                    CommentEmail: emailValue,
-                    CommentContent: messageValue,
-                    BlogPostId: blogId
-                };
-                console.log(formData);
-
-                $.ajax({
-                    type: 'POST',
-                    url: '/Comment/AddComment',
-                    data: formData,
-                    success: function (response) {
-
-                        if (response == "Ok") {
-                            $('#info').text('Yorumunuz alınmıştır');
-                        }
-                        else {
-                            $('#info').text('Bir Hata Oluştu Tekrar Deneyiniz');
-                        }
-                        $('#name').val("");
-                        $('#email').val("");
-                        $('#message').val("");
-                        $('#infodiv').show();
-                    },
-                    error: function (error) {
-
-                        console.error('Hata:', error);
-                    }
-                });
+              
             });
         });
     </script>

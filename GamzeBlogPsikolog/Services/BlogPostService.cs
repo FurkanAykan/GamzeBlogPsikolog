@@ -5,9 +5,6 @@ using GamzeBlogPsikolog.Entity.Interfaces;
 using GamzeBlogPsikolog.EntityViewModels;
 
 using GamzeBlogPsikolog.Context;
-using GamzeBlogPsikolog.Entity;
-using GamzeBlogPsikolog.Entity.Interfaces;
-using GamzeBlogPsikolog.EntityViewModels;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
