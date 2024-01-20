@@ -14,9 +14,9 @@ namespace GamzeBlogPsikolog.Areas.Admin.Controllers
         }
 
         [Area("Admin")]
-        public async Task<IActionResult> AllComment()
+        public async Task<IActionResult> AllComment(int id)
         {
-           var commentList= await _commentService.GetAllCommentAdmin();
+           var commentList= await _commentService.GetAllCommentByBlogIdAdmin(id);
             return View(commentList);
         } 
         [Area("Admin")]
@@ -25,6 +25,27 @@ namespace GamzeBlogPsikolog.Areas.Admin.Controllers
         {
            CommentViewModel model= await _commentService.GetCommentByIdAdmin(id);
             return Json(model);
+        }
+        [Area("Admin")]
+        [HttpPost]
+        public async Task<JsonResult> EditComment([FromBody]CommentViewModel comment)
+        {
+            await _commentService.EditComment(comment);
+            return Json("");
+        }
+        [Area("Admin")]
+        [HttpGet]
+        public async Task<JsonResult> GetReplyCommentById(int id)
+        {
+            ReplyCommentViewModel model = await _commentService.GetReplyCommentByIdAdmin(id);
+            return Json(model);
+        }
+        [Area("Admin")]
+        [HttpPost]
+        public async Task<JsonResult> EditReplyComment([FromBody] ReplyCommentViewModel comment)
+        {
+            await _commentService.EditReplyComment(comment);
+            return Json("");
         }
     }
 }
