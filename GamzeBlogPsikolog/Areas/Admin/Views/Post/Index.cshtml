@@ -76,7 +76,9 @@
                                         <th>Durumu</th>
                                         <th>Güncelle</th>
                                         <th>Aktif/Pasif</th>
+
                                         <th>Yorumlar</th>
+
                                     </tr>
                                 </thead>
                                 <tbody class="blog-list">
@@ -91,11 +93,13 @@
                                             <td>@post.CreateDate.ToShortDateString()</td>
                                             <td><label class="badge badge-@(post.Status?"success":"danger")">@(post.Status ? "Yayında" : "Yayında Değil")</label></td>
                                             <td><input type="submit" class="btn btn-warning" id="btnEdit" onclick="blogEdit('@post.BlogId')" value="Güncelle" /></td>
+
                                             <td>
                                                 <button class="btn btn-@(post.Status ? "danger" : "success") changeStatu" data-post-id="@post.BlogId">
                                                     @(post.Status ? "Yayından Kaldır" : "Yayına Al")
                                                 </button>
                                             </td>
+
                                             <td>
                                                 <a href="/admin/Comment/AllComment/@post.BlogId" class="btn btn-info">
                                                     Yorumlar
@@ -105,7 +109,7 @@
                                         </tr>
                                         sayi++;
                                     }
-                                  
+
                                 </tbody>
                             </table>
                         </div>

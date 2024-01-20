@@ -3,6 +3,9 @@ using GamzeBlogPsikolog.Entity;
 using GamzeBlogPsikolog.Entity.Interfaces;
 using GamzeBlogPsikolog.EntityViewModels;
 using GamzeBlogPsikolog.Models;
+
+using GamzeBlogPsikolog.Services;
+
 using Microsoft.AspNetCore.Mvc;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
@@ -23,10 +26,14 @@ namespace GamzeBlogPsikolog.Areas.Admin.Controllers
             _sliderPostServis = sliderPostServis;
         }
 
-        public IActionResult SliderIndex()
+
+        public async Task<IActionResult> SliderIndex()
         {
-            return View();
-        }
+            var sliderList = await rp.GetAll();
+            var sl = _mapper.Map<List<SliderViewModel>>(sliderList);
+            return View(sl);
+
+       
 
         [HttpPost]
         public IActionResult AddSlider([FromBody] SliderViewModel m)
@@ -58,6 +65,38 @@ namespace GamzeBlogPsikolog.Areas.Admin.Controllers
             }
             return Json(alert);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetData(int id)
+        {
+            var getSlider = await rp.GetByIdAsync(x => x.SliderId == id);
+            return Json(getSlider);
+        }
+        [HttpPost]
+        public async Task<JsonResult> Delete(int postId)
+        {
+            var getSlider = await rp.GetByIdAsync(x => x.SliderId == postId);
+
+            if (getSlider != null)
+            {
+                if (getSlider.Status)
+                {
+                    getSlider.Status = false;
+                    rp.Update(getSlider);
+                    return Json(false);
+
+                }
+                else
+                {
+                    getSlider.Status = true;
+                    rp.Update(getSlider);
+                    return Json(true);
+
+                }
+            }
+            return Json(new { success = true });
+        }
+
         [HttpPost]
         public IActionResult UploadImage(int id, IFormFile file, [FromServices] IWebHostEnvironment webHostEnvironment)
         {

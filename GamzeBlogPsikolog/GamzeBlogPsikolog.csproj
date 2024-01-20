@@ -7,6 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\table-template\.DS_Store" />
+    <None Include="wwwroot\table-template\css\.DS_Store" />
+    <None Include="wwwroot\table-template\css\bootstrap\.DS_Store" />
+    <None Include="wwwroot\table-template\css\bootstrap\mixins\.DS_Store" />
+    <None Include="wwwroot\table-template\fonts\.DS_Store" />
+    <None Include="wwwroot\table-template\images\.DS_Store" />
+    <None Include="wwwroot\table-template\js\.DS_Store" />
+    <None Include="wwwroot\table-template\scss\.DS_Store" />
+    <None Include="wwwroot\table-template\scss\bootstrap\.DS_Store" />
     <None Include="wwwroot\Theme\sass-cache\93baba3d74e776347d5d8cca18d25fb34da585bc\style.scssc" />
     <None Include="wwwroot\Theme\sass-cache\93baba3d74e776347d5d8cca18d25fb34da585bc\_fonts.scssc" />
     <None Include="wwwroot\Theme\sass-cache\93baba3d74e776347d5d8cca18d25fb34da585bc\_mixin.scssc" />
