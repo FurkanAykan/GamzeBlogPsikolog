@@ -1,7 +1,5 @@
 ﻿@using PagedList
 
-
-
 @model AdminBlogList
 
 @{
@@ -63,66 +61,47 @@
                 <!-- Updated the class from "col-lg-6" to "col-12" to take up the full width -->
                 <div class="card">
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h4 class="card-title">Blog Listesi</h4>
-                            </div>
-                            <div class="col-md-6 d-flex justify-content-end">
-                                <input type="button" class="btn btn-gradient-primary" id="btnsubmit" value="Eke" />
-                            </div>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="card-title">Blog Listesi</h4>
+                            <input type="button" class="btn btn-gradient-primary" id="btnsubmit" value="Eke" />
                         </div>
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th style="width: 10px">#</th>
-                                    <th>Blog Başlığı</th>
-                                    <th>Blog Oluşturulma Tarihi</th>
-                                    <th>Durumu</th>
-                                    <th>Güncelle</th>
-                                    <th>Aktif/Pasif</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @{
-                                    int sayi = 1;
-                                }
-                                @foreach (var post in Model.BlogList)
-                                {
-                                    if (sayi % 2 == 0)
-                                    {
-                                        <tr>
-                                            <td class="fnt-bld">@($"{deger + sayi}.")</td>
-                                            <td>@post.BlogTitle</td>
-                                            <td>@post.CreateDate.ToShortDateString()</td>
-                                            <td><label class="badge badge-@(post.Status?"success":"danger")">@(post.Status ? "Yayında" : "Yayında Değil")</label></td>
-                                            <td><input type="submit" class="btn btn-warning" id="btnEdit" onclick="blogEdit('@post.BlogId')" value="Güncelle" /></td>
-                                            <td>
-                                                <button class="btn btn-@(post.Status ? "danger" : "success") changeStatu" data-post-id="@post.BlogId">
-                                                    @(post.Status ? "Yayından Kaldır" : "Yayına Al")
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    }
-                                    else
-                                    {
-                                        <tr>
-                                            <td class="fnt-bld">@($"{deger + sayi}.")</td>
-                                            <td>@post.BlogTitle</td>
-                                            <td>@post.CreateDate.ToShortDateString()</td>
-                                            <td><label class="badge badge-@(post.Status?"success":"danger")">@(post.Status ? "Yayında" : "Yayında Değil")</label></td>
-                                            <td><input type="submit" class="btn btn-warning" id="btnEdit" onclick="blogEdit('@post.BlogId')" value="Güncelle" /></td>
-                                            <td>
-                                                <button class="btn btn-@(post.Status ? "danger" : "success") changeStatu" data-post-id="@post.BlogId">
-                                                    @(post.Status ? "Yayından Kaldır" : "Yayına Al")
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    }
-                                    sayi++;
-                                }
 
-                            </tbody>
-                        </table>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 10px">#</th>
+                                        <th>Blog Başlığı</th>
+                                        <th>Blog Oluşturulma Tarihi</th>
+                                        <th>Durumu</th>
+                                        <th>Güncelle</th>
+                                        <th>Aktif/Pasif</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="blog-list">
+                                    @{
+                                        int sayi = 1;
+                                    }
+                                    @foreach (var post in Model.BlogList)
+                                    {
+                                        <tr class="blog-item">
+                                            <td class="fnt-bld">@($"{deger + sayi}.")</td>
+                                            <td>@post.BlogTitle</td>
+                                            <td>@post.CreateDate.ToShortDateString()</td>
+                                            <td><label class="badge badge-@(post.Status?"success":"danger")">@(post.Status ? "Yayında" : "Yayında Değil")</label></td>
+                                            <td><input type="submit" class="btn btn-warning" id="btnEdit" onclick="blogEdit('@post.BlogId')" value="Güncelle" /></td>
+                                            <td>
+                                                <button class="btn btn-@(post.Status ? "danger" : "success") changeStatu" data-post-id="@post.BlogId">
+                                                    @(post.Status ? "Yayından Kaldır" : "Yayına Al")
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        sayi++;
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
                         <div class="pagination">
                             @if (Model.PageNumber > 1)
                             {
@@ -234,7 +213,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.min.js"></script>
     <script>
         CKEDITOR.replace('blogContent');
-        
+
         function blogEdit(id) {
             $("#btnBlogSubmitEdit").show();
             $.ajax({
@@ -250,6 +229,7 @@
                     CKEDITOR.instances['blogContent'].setData(response.blogContent);
                     $("#blogTitle").val(response.blogTitle);
                     $("#blogTag").val(response.blogTag);
+
                     $("#modalBlogId").val(response.blogId);
                     $("#orginalImagePath").val(response.blogImage);
                     $("#orginalThumbImagePath").val(response.blogThumbImage);
@@ -308,11 +288,24 @@
                         data: JSON.stringify(postDatas),
                         success: function (response) {
                             $('#myModal').modal('hide');
-                            alert("Blog başarıyla eklendi!");
+                            // Swal.fire({
+                            //     icon: 'success',
+                            //     title: 'Başarılı',
+                            //     text: 'Kayıt Başarıyla Eklendi!',
+                            //     timer: 3000,
+                            //     showConfirmButton: false
+                            // });
                             location.reload();
+
                         },
                         error: function (error) {
-                            console.error("Güncelleme yaparken bir hata oluştu. Tekrar deneyiniz...");
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Hata',
+                                text: 'Bir Hata Oluştu Tekrar Deneyiniz!',
+                                timer: 3000,
+                                showConfirmButton: false
+                            });
                         }
                     });
                 }
@@ -390,11 +383,22 @@
                         dataType: "json",
                         success: function (response) {
                             $('#myModal').modal('hide');
-                            alert("Blog başarıyla eklendi!");
-                            location.reload();
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Başarılı',
+                                text: 'Kayıt Başarıyla Eklendi!',
+                                timer: 3000,
+                                showConfirmButton: false
+                            });
                         },
                         error: function (error) {
-                            alert("Bir hata oluştu. Blog eklenemedi.");
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Hata',
+                                text: 'Bir Hata Oluştu Tekrar Deneyiniz!',
+                                timer: 3000,
+                                showConfirmButton: false
+                            });
                         }
                     });
                 }

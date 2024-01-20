@@ -1,7 +1,10 @@
-﻿@{
-    ViewData["Title"] = "SliderIndex";
+﻿@model List<SliderViewModel>
+@{
+    ViewData["Title"] = "Slider";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+WyAegYO4pRemzl9uP5nt/s4p1so17CJNQ"
+      crossorigin="anonymous">
 <style>
     /* Add this CSS to make the modal full-width */
     .modal-fullpage {
@@ -19,30 +22,15 @@
         margin-top: 25px;
     }
 
-    .pagination {
-        display: flex;
-        list-style: none;
+    #resim {
+        width: 8rem;
+        height: 4rem;
+        border-radius: 0;
     }
 
-        .pagination a {
-            padding: 8px;
-            margin: 4px;
-            text-decoration: none;
-            color: #333;
-            background-color: #eee;
-            border-radius: 4px;
-        }
-
-            .pagination a.active {
-                background-color: #007bff;
-                color: #fff;
-            }
-
-        .pagination .ellipsis {
-            padding: 8px;
-            margin: 4px;
-            pointer-events: none;
-        }
+    .texts {
+        white-space: break-spaces !important;
+    }
 
 </style>
 <div class="col-lg-12 grid-margin stretch-card">
@@ -56,41 +44,43 @@
                     <input type="button" class="btn btn-gradient-info" id="sliderEkle" value="Ekle" />
                 </div>
             </div>
-
+            <div class="table-responsive">
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th> Fotoğraf </th>
-                        <th> Slider Küçük Yazı </th>
-                        <th> Slider Küçük Yazı </th>
-                        <th> Durumu </th>
-                        <th> Güncelle </th>
-                        <th> Aktif/Pasif </th>
+                        <th style="width: 10px">#</th>
+                        <th>Resim</th>
+                        <th>Slider Küçük</th>
+                        <th>Slider Büyük</th>
+                        <th>Durumu</th>
+                        <th>Güncelle</th>
+                        <th>Aktif/Pasif</th>
                     </tr>
                 </thead>
-                <tbody>
-                    @*  <tr>
-                    <td class="py-1">
-                    <img src="../../assets/images/faces-clipart/pic-1.png" alt="image" />
-                    </td>
-                    <td> Herman Beck </td>
-                    <td>
-                    <div class="progress">
-                    <div class="progress-bar bg-success" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    </td>
-                    <td> $ 77.99 </td>
-                    <td> May 15, 2015 </td>
-                    <td><input type="submit" class="btn btn-warning" id="btnEdit" onclick="blogEdit('@post.BlogId')" value="Güncelle" /></td>
-                    <td>
-                    <button class="btn btn-@(post.Status ? "danger" : "success") changeStatu" data-post-id="@post.BlogId">
-                    @(post.Status ? "Yayından Kaldır" : "Yayına Al")
-                    </button>
-                    </td>
-                    </tr> *@
-
+                <tbody class="blog-list">
+                    @{
+                        int sayi = 1;
+                    }
+                    @foreach (var post in Model)
+                    {
+                        <tr class="blog-item">
+                            <td class="fnt-bld">@($"{sayi}.")</td>
+                            <td><img id="resim" src="@post.SliderImage" alt="Slider Resmi"></td>
+                            <td class="texts">@post.SliderSmallText</td>
+                            <td class="texts">@post.SliderBigText</td>
+                            <td><label class="badge badge-@(post.Status?"success":"danger")">@(post.Status ? "Yayında" : "Yayında Değil")</label></td>
+                            <td><input type="submit" class="btn btn-warning" id="btnEdit" onclick="sliderEdit('@post.SliderId')" value="Güncelle" /></td>
+                            <td>
+                                <button class="btn btn-@(post.Status ? "danger" : "success") changeStatu" data-post-id="@post.SliderId">
+                                    @(post.Status ? "Yayından Kaldır" : "Yayına Al")
+                                </button>
+                            </td>
+                        </tr>
+                        sayi++;
+                    }
                 </tbody>
             </table>
+            </div>
         </div>
     </div>
 </div>
@@ -103,7 +93,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" style="margin-top: -1rem;">
 
                 <div class="page-wrapper bg-blue p-t-100 p-b-100 font-robo">
                     <div class="wrapper wrapper--w680">
@@ -121,7 +111,7 @@
                                         </div>
                                         <br />
                                         <div class="input-group col-xs-12">
-                                            <input id="blogImage" type="text" class="form-control file-upload-info" disabled placeholder="Resim Yükle">
+                                            <input id="sliderImage" type="text" class="form-control file-upload-info" disabled placeholder="Resim Yükle">
                                             <span class="input-group-append">
                                                 <button class="file-upload-browse btn btn-gradient-primary" type="button" onclick="document.getElementById('fileInput').click()">Yükle</button>
                                             </span>
@@ -129,15 +119,15 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="sliderSmall">Slider Küçük Yazı</label>
-                                        <input type="text" class="form-control" id="sliderSmall" placeholder="Slider Küçük Yazı">
+                                        <input type="text" class="form-control" id="sliderSmall" placeholder="En fazla 3 Kelime Yazınız.">
                                     </div>
                                     <div class="form-group">
                                         <label for="sliderBig">Slider Büyük Yazı</label>
-                                        <input type="text" class="form-control" id="sliderBig" placeholder="Slider Büyük Yazı">
+                                        <input type="text" class="form-control" id="sliderBig" placeholder="En fazla 6 Kelime Yazınız.">
                                     </div>
                                     <div class="form-group">
                                         <label for="sliderStatu">Slider Statüsü</label>
-                                        <select class="form-control" id="blogStatu">
+                                        <select class="form-control" id="sliderStatu">
                                             <option value="True">Aktif</option>
                                             <option value="False">Pasif</option>
                                         </select>
@@ -174,14 +164,116 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.min.js"></script>
 
     <script>
+        @*resim boyutlama start*@
+            window.onload = function () {
+                var resimElementi = document.getElementById('resim');
+                function kontrolEt() {
+                    var genislik = resimElementi.width;
 
-        // $('#sliderEkle').click(function () {
-        //     $('#myModal').modal('show');
-        // });
+                    if (genislik > 500) {
+                        resimElementi.style.width = '500px';
+                    }
+                }
 
+                // Kontrol etme işlevini çağırın
+                kontrolEt();
+            };
+        @*resim boyutlama end*@
 
+        @*Güncelleme İşlemi Start*@
 
+            function sliderEdit(id) {
+                $("#btnSliderEdit").show();
+                $.ajax({
+                    type: "GET",
+                    url: "/Admin/Slider/GetData/" + id,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    cache: false,
+                    success: function (response) {
+                        console.log(response);
+                        var statusValue = response.status === true;
+                        $("#sliderStatu").val(statusValue ? "True" : "False");
+                        showImagePreview(response.sliderImage);
+                        $("#sliderBig").val(response.sliderBigText);
+                        $("#sliderSmall").val(response.sliderSmallText);
 
+                        $("#modalSliderId").val(response.sliderId);
+                        $("#orginalImagePath").val(response.sliderImage);
+
+                        $("#btnSliderAdd").hide();
+                        $(".title").text("Slider Güncelle");
+                    }
+                });
+                $('#myModal').modal('show');
+            }
+
+        $(document).ready(function () {
+            $("#btnSliderEdit").on("click", function () {
+                var fileInput = document.getElementById('fileInput');
+                var file = fileInput.files[0];
+                var formData = new FormData();
+                formData.append('file', file);
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/Slider/UploadImage",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (imagePaths) {
+                        console.log(imagePaths);
+                        handleBlogEdit(imagePaths);
+                    },
+                    error: function (error) {
+                        alert("Fotoğraf yüklenirken bir hata oluştu.");
+                    }
+                });
+            });
+            function handleBlogEdit(imagePaths) {
+                var sliderId = $("#modalSliderId").val();
+                var sliderBig = $("#sliderBig").val();
+                var sliderSmall = $("#sliderSmall").val();
+                var sliderStatu = $("#sliderStatu").val() === "True";
+
+                var postDatas = {
+                    SliderId: sliderId,
+                    SliderBigText: sliderBig,
+                    SliderSmallText: sliderSmall,
+                    Status: sliderStatu,
+                    SliderImage: imagePaths !== null ? imagePaths.originalPath : $("#orginalImagePath").val()
+                };
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/Slider/AddSlider",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    data: JSON.stringify(postDatas),
+                    success: function (response) {
+                        $('#myModal').modal('hide');
+                        // Swal.fire({
+                        //     icon: 'success',
+                        //     title: 'Başarılı',
+                        //     text: 'Kayıt Başarıyla Güncellendi!',
+                        //     timer: 3000,
+                        //     showConfirmButton: false
+                        // });
+                        location.reload();
+
+                    },
+                    error: function (error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Hata',
+                            text: 'Bir Hata Oluştu Tekrar Deneyiniz!',
+                            timer: 3000,
+                            showConfirmButton: false
+                        });
+                    }
+                });
+            }
+
+        });
+        @*Güncelleme İşlemi End*@
         @*Kaydet İşlemi Start*@
             $(document).ready(function () {
                 $("#sliderEkle").click(function () {
@@ -189,12 +281,10 @@
                     $("#btnSliderAdd").show();
                     $(".card-title").text("Slider Kaydet");
                     previewImage();
-                    // document.getElementById('fileInput').value = null;
                     document.getElementById('preview').src = "";
-                    document.getElementById('blogImage').value = "";
+                    document.getElementById('sliderImage').value = "";
                     document.getElementById('sliderSmall').value = "";
                     document.getElementById('sliderBig').value = "";
-                    // document.getElementById('sliderStatu').value = "";
                     document.getElementById('modalSliderId').value = "";
                     document.getElementById('orginalImagePath').value = "";
                     $('#myModal').modal('show');
@@ -229,7 +319,7 @@
                 function handleBlogPost(imagePath) {
                     var sliderSmall = $("#sliderSmall").val();
                     var sliderBig = $("#sliderBig").val();
-                    var sliderStatu = ($("#blogStatu").val() === "True");
+                    var sliderStatu = ($("#sliderStatu").val() === "True");
 
                     var postData = {
                         SliderSmallText: sliderSmall,
@@ -237,6 +327,7 @@
                         Status: sliderStatu,
                         SliderImage: imagePath.originalPath,
                     };
+                    console.log(postData)
                     $.ajax({
                         type: "POST",
                         url: "/Admin/Slider/AddSlider",
@@ -245,11 +336,23 @@
                         dataType: "json",
                         success: function (response) {
                             $('#myModal').modal('hide');
-                            alert("Blog başarıyla eklendi!");
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Başarılı',
+                                text: 'Kayıt Başarıyla Eklendi!',
+                                timer: 3000,
+                                showConfirmButton: false
+                            });
                             location.reload();
                         },
                         error: function (error) {
-                            alert("Bir hata oluştu. Blog eklenemedi.");
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Hata',
+                                text: 'Bir Hata Oluştu Tekrar Deneyiniz!',
+                                timer: 3000,
+                                showConfirmButton: false
+                            });
                         }
                     });
                 }
@@ -258,9 +361,9 @@
 
 
         @*Close Modal Start*@
-        $("#closeModalIcon").click(function () {
-            $('#myModal').modal('hide');
-        });
+            $("#closeModalIcon").click(function () {
+                $('#myModal').modal('hide');
+            });
         $(".closeModal").click(function () {
             $('#myModal').modal('hide');
         });
@@ -275,10 +378,9 @@
         function togglePostStatus(postId) {
             $.ajax({
                 type: "POST",
-                url: "/Admin/Post/Delete",
+                url: "/Admin/Slider/Delete",
                 data: { postId: postId },
                 success: function (response) {
-                    console.log(response);
                     Swal.fire({
                         icon: response ? 'success' : 'error',
                         title: response ? 'Başarılı' : 'Kaldırıldı',
@@ -286,7 +388,6 @@
                     }).then(() => {
                         location.reload();
                     });
-
                 },
                 error: function (error) {
                     Swal.fire({
@@ -324,7 +425,7 @@
         @*Resim önizleme fonksiyonu*@
             function showImagePreview(imagePath) {
                 var imagePreview = document.getElementById('imagePreview');
-                var blogImageInput = document.getElementById('blogImage');
+                var sliderImageInput = document.getElementById('sliderImage');
 
                 if (imagePath) {
                     // Resim varsa önizleme alanını göster
@@ -332,12 +433,12 @@
                     // Resmi görüntüle
                     $('#preview').attr('src', imagePath);
                     // Resim yolu bilgisini input alanına yaz
-                    blogImageInput.value = imagePath;
+                    sliderImageInput.value = imagePath;
                 } else {
                     // Resim yoksa önizleme alanını gizle
                     imagePreview.style.display = 'none';
                     // Input alanını temizle
-                    blogImageInput.value = '';
+                    sliderImageInput.value = '';
                 }
             }
         @*Resim önizleme fonksiyonu End*@
