@@ -13,6 +13,7 @@ namespace GamzeBlogPsikolog.Context
         public DbSet<ReplyComment> ReplyComments { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<BlogPost> BlogPosts { get; set; }
+        public DbSet<Slider> Sliders { get; set; }
 
     }
 }
