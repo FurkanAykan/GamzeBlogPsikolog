@@ -55,9 +55,29 @@ namespace GamzeBlogPsikolog.Services
             }
         }
 
-        public async Task<List<CommentViewModel>> GetAllCommentAdmin()
+        public async Task EditComment(CommentViewModel comment)
         {
-            var commentlist = await _commentRepo.GetAll(null, null, x => x.ReplyComments);
+            var com = await _commentRepo.GetByIdAsync(x => x.CommentId == comment.CommentId);
+            com.CommentContent = comment.CommentContent;
+            com.CommentStatus = comment.CommentStatus;
+            com.CommentEmail = comment.CommentEmail;
+            com.CommentUserName = comment.CommentUserName;
+             _commentRepo.Update(com);
+        }
+
+        public async Task EditReplyComment(ReplyCommentViewModel comment)
+        {
+            var com = await _replyCommentRepo.GetByIdAsync(x => x.ReplyCommentId == comment.ReplyCommentId);
+            com.ReplyCommentContent = comment.ReplyCommentContent;
+            com.ReplyCommentStatus = comment.ReplyCommentStatus;
+            com.ReplyCommentEmail = comment.ReplyCommentEmail;
+            com.ReplyCommentUserName = comment.ReplyCommentUserName;
+            _replyCommentRepo.Update(com);
+        }
+
+        public async Task<List<CommentViewModel>> GetAllCommentByBlogIdAdmin(int id)
+        {
+            var commentlist = await _commentRepo.GetAll(x => x.BlogPostId == id, null, x => x.ReplyComments);
             List<CommentViewModel> mappedCommentList = _mapper.Map<List<CommentViewModel>>(commentlist);
             return mappedCommentList;
         }
@@ -71,8 +91,15 @@ namespace GamzeBlogPsikolog.Services
 
         public async Task<CommentViewModel> GetCommentByIdAdmin(int id)
         {
-            var comment = await _commentRepo.GetByIdAsync(x=>x.CommentId==id, null, x => x.ReplyComments);
+            var comment = await _commentRepo.GetByIdAsync(x => x.CommentId == id, null, x => x.ReplyComments);
             CommentViewModel mappedComment = _mapper.Map<CommentViewModel>(comment);
+            return mappedComment;
+        }
+
+        public async Task<ReplyCommentViewModel> GetReplyCommentByIdAdmin(int id)
+        {
+            var replyComment = await _replyCommentRepo.GetByIdAsync(x => x.ReplyCommentId == id);
+            ReplyCommentViewModel mappedComment = _mapper.Map<ReplyCommentViewModel>(replyComment);
             return mappedComment;
         }
     }
