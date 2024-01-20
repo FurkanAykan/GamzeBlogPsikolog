@@ -68,7 +68,7 @@
                                 <h4 class="card-title">Blog Listesi</h4>
                             </div>
                             <div class="col-md-6 d-flex justify-content-end">
-                                <input type="button" class="btn btn-gradient-primary" id="btnsubmit" value="Kaydet" />
+                                <input type="button" class="btn btn-gradient-primary" id="btnsubmit" value="Eke" />
                             </div>
                         </div>
                         <table class="table">
@@ -210,11 +210,12 @@
                                 </div>
                                 <input type="button" class="btn btn-gradient-primary mr-2" id="btnBlogSubmit" value="Kaydet" />
                                 <input type="button" class="btn btn-gradient-primary mr-2" id="btnBlogSubmitEdit" value="Güncelle" />
+                                <button class="btn btn-light">İptal</button>
+
                                 <input type="hidden" id="modalBlogId" />
                                 <input type="hidden" id="orginalImagePath" />
                                 <input type="hidden" id="orginalThumbImagePath" />
 
-                                <button class="btn btn-light">İptal</button>
                             </form>
                         </div>
                     </div>
@@ -233,14 +234,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.min.js"></script>
     <script>
         CKEDITOR.replace('blogContent');
-        $(document).ready(function () {
-            $('#myModal').on('click', function (event) {
-                // Modal dışına tıklanmasını engelle
-                if (event.target.id === 'myModal') {
-                    event.stopPropagation();
-                }
-            });
-        });
+        
         function blogEdit(id) {
             $("#btnBlogSubmitEdit").show();
             $.ajax({
