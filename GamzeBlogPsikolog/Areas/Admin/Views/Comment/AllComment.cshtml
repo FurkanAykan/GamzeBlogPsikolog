@@ -3,49 +3,74 @@
     ViewData["Title"] = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
-
-<div class="main-panel">
+<style>
+    .a {
+        padding-left: 3rem !important
+    }
+</style>
+<div class=" row">
 
     <div class="col-lg-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title">Yorumlar</h4>            
+                <h4 class="card-title">Yorumlar</h4>
                 <table class="table table-hover">
                     <thead>
                         <tr>
+                            <th>Tür</th>
                             <th>İsim</th>
                             <th>Email</th>
                             <th>Yorum</th>
-                            <th>Durum</th>                            
-                            <th>Kontrol</th>                            
+                            <th>Durum</th>
+                            <th>Kontrol</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var comment in Model)
                         {
                             <tr>
+                                <td>Yorum</td>
                                 <td>@comment.CommentUserName</td>
                                 <td>@comment.CommentEmail</td>
                                 <td>@comment.CommentContent</td>
                                 <td><label class="badge badge-@(@comment.CommentStatus?"success":"danger")">@comment.CommentStatus</label></td>
                                 <td>
                                     <button type="button" class="btn btn-primary" onclick="getComment('@comment.CommentId')">
-                                       İncele
+                                        İncele
                                     </button>
                                 </td>
-                                
+
                             </tr>
-                        }                       
+                            @foreach (var replyComment in comment.ReplyComments)
+                            {
+                                <tr style="background-color:lightgray;">
+                                    <td class="a">Yoruma yorum</td>
+                                    <td class="a">@replyComment.ReplyCommentUserName</td>
+                                    <td class="a">@replyComment.ReplyCommentEmail</td>
+                                    <td class="a">@replyComment.ReplyCommentContent</td>
+                                    <td class="a"><label class="badge badge-@(@replyComment.ReplyCommentStatus?"success":"danger")">@replyComment.ReplyCommentStatus</label></td>
+                                    <td class="a">
+                                        <button type="button" class="btn btn-primary" onclick="getReplyComment('@replyComment.ReplyCommentId')">
+                                            İncele
+                                        </button>
+                                    </td>
+
+                                </tr>
+                            }
+
+                        }
+
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
+
 </div>
 
 
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog  modal-fullpage" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Yorum</h5>
@@ -53,70 +78,167 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
-                <form id="modalForm" class="forms-sample">
-                    <div class="form-group">
-                        <label for="modalInputUsername">İsim</label>
-                        <input type="text" class="form-control" id="modalInputUsername" placeholder="İsim">
-                    </div>
-                    <div class="form-group">
-                        <label for="modalInputEmail">Email</label>
-                        <input type="email" class="form-control" id="modalInputEmail" placeholder="Email">
-                    </div>
-                    <div class="form-group">
-                        <label for="modalInputPassword">Yorum</label>
-                        <input type="text" class="form-control" id="modalInputContent" placeholder="Yorum">
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="modalInputStatus" id="modalInputStatusTrue" value="true">
-                        <label class="form-check-success" for="modalInputStatusTrue">
-                            True
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-danger" type="radio" name="modalInputStatus" id="modalInputStatusFalse" value="false">
-                        <label class="form-check-label" for="modalInputStatusFalse">
-                            False
-                        </label>
-                    </div>
-                   
-                    <div class="form-check form-check-flat form-check-primary">
-                        <label class="form-check-label">
-                            <input type="checkbox" class="form-check-input"> Remember me
-                        </label>
-                    </div>
-                    <button type="submit" class="btn btn-gradient-primary mr-2">Kaydet</button>
-                    <button type="button" class="btn btn-light" data-dismiss="modal">Vazgeç</button>
-                </form>
+            <div class="modal-body row">
+
+                <div class="col-lg-12">
+
+                    <form id="modalForm" class="forms-sample">
+                        <input type="hidden" id="modalInputCommentId">
+                        <div class="form-group">
+                            <label for="modalInputUsername">İsim</label>
+                            <input type="text" class="form-control" id="modalInputUsername" placeholder="İsim">
+                        </div>
+                        <div class="form-group">
+                            <label for="modalInputEmail">Email</label>
+                            <input type="email" class="form-control" id="modalInputEmail" placeholder="Email">
+                        </div>
+                        <div class="form-group">
+                            <label for="modalInputContent">Yorum</label>
+                            <input type="text" class="form-control" id="modalInputContent" placeholder="Yorum">
+                        </div>
+                        <div class="form-group">
+                            <label for="modalInputDate">Tarih</label>
+                            <input type="text" class="form-control" id="modalInputDate" placeholder="Tarih" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="blogStatu">Blog Statüsü</label>
+                            <select class="form-control" id="blogStatu">
+                                <option value="True">Aktif</option>
+                                <option value="False">Pasif</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-gradient-primary mr-2" id="commentEditButton" onclick="save()">Kaydet</button>
+                        <button type="submit" class="btn btn-gradient-primary mr-2" id="ReplyCommentEditButton" onclick="saveReply()">Kaydet</button>
+                        <button type="button" class="btn btn-light" data-dismiss="modal">Vazgeç</button>
+                    </form>
+                </div>
+
+
+
             </div>
+
         </div>
     </div>
 </div>
 @section Scripts {
-<script>
+    <script>
 
-document.getElementById('modalForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    
-  });
-    function getComment(id) {      
+        document.getElementById('modalForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+        });
+        function getComment(id) {
             $.ajax({
                 type: "GET",
-                url: "/Admin/Comment/GetCommentById/" + id,                          
+                url: "/Admin/Comment/GetCommentById/" + id,
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 cache: false,
-                success: function (response) {                  
+                success: function (response) {
                     $('#modalInputUsername').val(response.commentUserName);
                     $('#modalInputEmail').val(response.commentEmail);
                     $('#modalInputContent').val(response.commentContent);
-                    $('#modalInputStatus').val(response.commentStatus);
+                    // Assuming response.createDate is in a valid date format
+                    var serverDate = new Date(response.createDate);
+                    var formattedDate = serverDate.getDate() + '/' + (serverDate.getMonth() + 1) + '/' + serverDate.getFullYear();
+
+                    // Set the formatted date to the input
+                    $('#modalInputDate').val(formattedDate);
+
+                    $('#modalInputCommentId').val(response.commentId);
+                    $('#blogStatu').val(response.commentStatus ? "True" : "False");
+                    document.getElementById('commentEditButton').style.display = 'block';
+                    document.getElementById('ReplyCommentEditButton').style.display = 'none';
+
                     $('#exampleModal').modal('show')
                 }
             });
-         
-    }
+        }
+        function save() {
+            var userName = $('#modalInputUsername').val();
+            var email = $('#modalInputEmail').val();
+            var content = $('#modalInputContent').val();
+            var status = $('#blogStatu').val() === "True";
+            var commentId = $('#modalInputCommentId').val();
+        
 
-       
-</script>
+            $('#exampleModal').modal('hide');
+
+            const comment = {
+                CommentId: commentId,
+                CommentUserName: userName,
+                CommentStatus: status,
+                CommentContent: content,
+                CommentEmail: email,                      
+            }
+            console.log(comment);
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Comment/EditComment",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(comment),
+                success: function (response) {
+                    location.reload();
+                }
+            });
+        }
+        function getReplyComment(id) {
+            $.ajax({
+                type: "GET",
+                url: "/Admin/Comment/GetReplyCommentById/" + id,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                cache: false,
+                success: function (response) {
+
+                    $('#modalInputUsername').val(response.replyCommentUserName);
+                    $('#modalInputEmail').val(response.replyCommentEmail);
+                    $('#modalInputContent').val(response.replyCommentContent);
+                    // Assuming response.createDate is in a valid date format
+                    var serverDate = new Date(response.replyCreateDate);
+                    var formattedDate = serverDate.getDate() + '/' + (serverDate.getMonth() + 1) + '/' + serverDate.getFullYear();
+
+                    // Set the formatted date to the input
+                    $('#modalInputDate').val(formattedDate);
+
+                    $('#modalInputCommentId').val(response.replyCommentId);
+                    $('#blogStatu').val(response.replyCommentStatus ? "True" : "False");
+                    document.getElementById('commentEditButton').style.display = 'none';
+                    document.getElementById('ReplyCommentEditButton').style.display = 'block';
+                    $('#exampleModal').modal('show')
+                }
+            });
+           
+        }
+        function saveReply() {
+            var userName = $('#modalInputUsername').val();
+            var email = $('#modalInputEmail').val();
+            var content = $('#modalInputContent').val();
+            var status = $('#blogStatu').val() === "True";
+            var commentId = $('#modalInputCommentId').val();
+
+
+            $('#exampleModal').modal('hide');
+
+            const replyComment = {
+                ReplyCommentId: commentId,
+                ReplyCommentUserName: userName,
+                ReplyCommentStatus: status,
+                ReplyCommentContent: content,
+                ReplyCommentEmail: email,
+            }
+            console.log(replyComment);
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Comment/EditReplyComment",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(replyComment),
+                success: function (response) {
+                    location.reload();
+                }
+            });
+        }
+
+    </script>
 }

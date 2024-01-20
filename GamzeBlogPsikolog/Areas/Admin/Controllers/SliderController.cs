@@ -3,7 +3,9 @@ using GamzeBlogPsikolog.Entity;
 using GamzeBlogPsikolog.Entity.Interfaces;
 using GamzeBlogPsikolog.EntityViewModels;
 using GamzeBlogPsikolog.Models;
+
 using GamzeBlogPsikolog.Services;
+
 using Microsoft.AspNetCore.Mvc;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
@@ -24,12 +26,14 @@ namespace GamzeBlogPsikolog.Areas.Admin.Controllers
             _sliderPostServis = sliderPostServis;
         }
 
+
         public async Task<IActionResult> SliderIndex()
         {
             var sliderList = await rp.GetAll();
             var sl = _mapper.Map<List<SliderViewModel>>(sliderList);
             return View(sl);
-        }
+
+       
 
         [HttpPost]
         public IActionResult AddSlider([FromBody] SliderViewModel m)
@@ -61,6 +65,7 @@ namespace GamzeBlogPsikolog.Areas.Admin.Controllers
             }
             return Json(alert);
         }
+
         [HttpGet]
         public async Task<IActionResult> GetData(int id)
         {
@@ -91,6 +96,7 @@ namespace GamzeBlogPsikolog.Areas.Admin.Controllers
             }
             return Json(new { success = true });
         }
+
         [HttpPost]
         public IActionResult UploadImage(int id, IFormFile file, [FromServices] IWebHostEnvironment webHostEnvironment)
         {
