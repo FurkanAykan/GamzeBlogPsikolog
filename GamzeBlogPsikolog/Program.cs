@@ -31,16 +31,17 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
 app.MapControllerRoute(
            name: "areas",
            pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
          );
-//app.MapControllerRoute(
-//    name: "areas",
-//    pattern: "{controller=Home}/{action=Index}/{area?}");
-//app.MapControllerRoute(
-//    name: "area",
-//    pattern: "{controller=Home}/{action=Index}/{id}/{area=Admin}");
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{controller=Home}/{action=Index}/{area?}");
+app.MapControllerRoute(
+    name: "area",
+    pattern: "{controller=Home}/{action=Index}/{id}/{area=Admin}");
 
 
 app.Run();

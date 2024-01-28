@@ -11,6 +11,7 @@ namespace GamzeBlogPsikolog.Mapping
             CreateMap<Comment, CommentViewModel>().ReverseMap();
             CreateMap<ReplyComment, ReplyCommentViewModel>().ReverseMap();
             CreateMap<Slider, SliderViewModel>().ReverseMap();
+            CreateMap<Social, SocialViewModel>().ReverseMap();
         }
     }
 }
