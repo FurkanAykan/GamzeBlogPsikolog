@@ -18,6 +18,7 @@ namespace GamzeBlogPsikolog.Extensions
             services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<IReplyCommentService, ReplyCommentService>();
             services.AddScoped<ISlider, SliderService>();
+            services.AddScoped<ISocial, SocialService>();
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 

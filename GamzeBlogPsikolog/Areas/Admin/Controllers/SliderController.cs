@@ -32,7 +32,7 @@ namespace GamzeBlogPsikolog.Areas.Admin.Controllers
             var sliderList = await rp.GetAll();
             var sl = _mapper.Map<List<SliderViewModel>>(sliderList);
             return View(sl);
-
+        }
        
 
         [HttpPost]
