@@ -21,13 +21,13 @@ namespace GamzeBlogPsikolog.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var socialAll = await srp.GetByIdAsync(x => x.SocialId == 1);
+            var socialAll = await srp.GetByIdAsync(x => x.SocialId == 2);
             var social = _mapper.Map<SocialViewModel>(socialAll);
             return View(social);
         }
 
         [HttpPost]
-        public void AddSocial([FromBody] SocialViewModel sm)
+        public IActionResult AddSocial([FromBody] SocialViewModel sm)
         {
             AlertContent alert = new AlertContent();
             try
@@ -42,6 +42,8 @@ namespace GamzeBlogPsikolog.Areas.Admin.Controllers
                             sm.CreateDate = DateTime.Now;
                             srp.Add(socialAdd);
                             alert.Message = "Kayıt Başarıyla Eklendi";
+                            return Json(socialAdd);
+
                         }
                         catch (Exception)
                         {
@@ -56,6 +58,8 @@ namespace GamzeBlogPsikolog.Areas.Admin.Controllers
                             sm.UpdateDate = DateTime.Now;
                             srp.Update(socialUpdate);
                             alert.Message = "Kayıt Başarıyla Eklendi";
+                            return Json(socialUpdate);
+
                         }
                         catch (Exception)
                         {
@@ -69,8 +73,8 @@ namespace GamzeBlogPsikolog.Areas.Admin.Controllers
 
                 throw;
             }
-          
-          
+            return Json(alert);
+
         }
     }
 }

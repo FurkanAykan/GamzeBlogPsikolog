@@ -56,7 +56,8 @@
                     Tiktok: tiktok,
                     SocialId:socialId
                 };
-                console.log(postData);
+                debugger;
+
                 $.ajax({
                     type: 'POST',
                     url: '/Admin/Social/AddSocial',
@@ -68,11 +69,12 @@
                         location.reload();
                     },
                     error: function (error) {
-                       
+                        location.reload();
+
                     }
 
                 });
-
+                
             });
         });
     </script>
