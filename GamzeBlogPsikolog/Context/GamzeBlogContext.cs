@@ -15,6 +15,7 @@ namespace GamzeBlogPsikolog.Context
         public DbSet<BlogPost> BlogPosts { get; set; }
         public DbSet<Slider> Sliders { get; set; }
         public DbSet<Social> Socials { get; set; }
+        public DbSet<ContactMessage> ContactMessages { get; set; }
 
     }
 }

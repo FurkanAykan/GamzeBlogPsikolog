@@ -1,12 +1,21 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using GamzeBlogPsikolog.Entity.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace GamzeBlogPsikolog.Controllers
 {
     public class AboutController : Controller
     {
-        public IActionResult Index()
+        private readonly IAboutService _aboutService;
+
+        public AboutController(IAboutService aboutService)
         {
-            return View();
+            _aboutService = aboutService;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            var model = await _aboutService.GetAboutAsync();
+            return View(model);
         }
     }
 }

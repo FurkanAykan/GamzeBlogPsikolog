@@ -12,6 +12,9 @@ namespace GamzeBlogPsikolog.Entity.Interfaces
         Task EditComment(CommentViewModel comment);
         Task<ReplyCommentViewModel> GetReplyCommentByIdAdmin(int id);
         Task EditReplyComment(ReplyCommentViewModel comment);
+        Task<string> SendMessage(MessageViewModel model);
+        Task<List<MessageViewModel>> GetAllMessage();
+        Task MessageSeen(int id);
 
     }
 }
