@@ -9,13 +9,15 @@ namespace GamzeBlogPsikolog.Services
     {
         private readonly IGenericRepostory<Comment> _commentRepo;
         private readonly IGenericRepostory<ReplyComment> _replyCommentRepo;
+        private readonly IGenericRepostory<ContactMessage> _contactRepo;
         private readonly IMapper _mapper;
 
-        public CommentService(IGenericRepostory<Comment> commentRepo, IMapper mapper, IGenericRepostory<ReplyComment> replyCommentRepo)
+        public CommentService(IGenericRepostory<Comment> commentRepo, IMapper mapper, IGenericRepostory<ReplyComment> replyCommentRepo, IGenericRepostory<ContactMessage> contactRepo)
         {
             _commentRepo = commentRepo;
             _mapper = mapper;
             _replyCommentRepo = replyCommentRepo;
+            _contactRepo = contactRepo;
         }
 
         public async Task<string> AddComment(CommentViewModel comment)
@@ -89,6 +91,8 @@ namespace GamzeBlogPsikolog.Services
             return mappedCommentList;
         }
 
+
+
         public async Task<CommentViewModel> GetCommentByIdAdmin(int id)
         {
             var comment = await _commentRepo.GetByIdAsync(x => x.CommentId == id, null, x => x.ReplyComments);
@@ -101,6 +105,37 @@ namespace GamzeBlogPsikolog.Services
             var replyComment = await _replyCommentRepo.GetByIdAsync(x => x.ReplyCommentId == id);
             ReplyCommentViewModel mappedComment = _mapper.Map<ReplyCommentViewModel>(replyComment);
             return mappedComment;
+        }
+
+        public async Task<string> SendMessage(MessageViewModel model)
+        {
+            try
+            {
+                ContactMessage newmessage = _mapper.Map<ContactMessage>(model);
+                newmessage.IsSeen = false;
+                newmessage.SendDate = DateTime.Now;
+                await _contactRepo.Add(newmessage);
+                return "Ok";
+            }
+            catch (Exception ex)
+            {
+
+                return ex.Message;
+            }
+        }
+        public async Task<List<MessageViewModel>> GetAllMessage()
+        {
+            var messageList = await _contactRepo.GetAll();
+            List<MessageViewModel> mappedMessageList = _mapper.Map<List<MessageViewModel>>(messageList);
+            mappedMessageList.Reverse();
+            return mappedMessageList;
+        }
+
+        public async Task MessageSeen(int id)
+        {
+           var message = await _contactRepo.GetByIdAsync(x => x.Id == id);
+            message.IsSeen = true;
+            _contactRepo.Update(message);
         }
     }
 }

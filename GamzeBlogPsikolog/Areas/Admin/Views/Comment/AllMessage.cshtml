@@ -1,0 +1,87 @@
+﻿@model List<MessageViewModel>
+@{
+    ViewData["Title"] = "AllMessage";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="row">
+    <div class="col-lg-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Gelen Mesajlar</h4>
+
+                <table class="table table-responsive">
+                    <thead>
+                        <tr>
+                            <th>İsim</th>
+                            <th>Email</th>
+                            <th>Tarih</th>
+                            <th>Durumu</th>
+                            <th>İncele</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var message in Model)
+                        {
+                            <tr>
+                                <td>@message.Name</td>
+                                <td>@message.Email</td>
+                                <td>@message.SendDate</td>
+                                <td><label class="badge badge-@(message.IsSeen ? "success" : "danger")">@(message.IsSeen ? "okundu" : "okunmadı")</label></td>
+                                <td><a class="btn btn-info" onclick="Detail('@message.Content','@message.IsSeen','@message.Id')">Ayrıntılar</a></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6 grid-margin stretch-card" id="messageDetailCard" style="display:none">
+        <div class="card">
+            <div class="card-body">
+                <a class="btn btn-success" onclick="closeDetail()" style="float: right"><</a>
+                <h4 class="card-title">Mesaj Detayları</h4>
+                <div id="messageContent"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function Detail(content, IsSeen,Id) {
+            var messageDetailCard = document.getElementById('messageDetailCard');
+            var messageContent = document.getElementById('messageContent');
+
+            if (messageDetailCard.style.display === 'none') {
+                messageDetailCard.style.display = 'block';
+                messageContent.innerHTML = content;
+            }               
+            if (IsSeen == "False") {
+                $.ajax({
+                    type: 'POST',
+                    url: '/Admin/Contact/SeenMessage/',
+                    data: {id:Id}
+,
+                    success: function (response) {
+                        var badgeElement = document.querySelector('.badge');
+
+   
+                        badgeElement.classList.remove('badge-danger');
+                        badgeElement.classList.add('badge-success');
+                        badgeElement.textContent = 'okundu';
+                       
+                    },
+                    error: function (error) {
+
+                        console.error('Hata:', error);
+                    }
+                });
+            }
+        }
+        function closeDetail() {
+            var messageDetailCard = document.getElementById('messageDetailCard');
+            messageDetailCard.style.display = 'none';
+            messageContent.innerHTML = "";
+        }
+    </script>
+}

@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -18,11 +17,11 @@
                 <div class="contact-form">
                     <h5 style="font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif">İletişime Geçin</h5>
                     <!-- Contact Form -->
-                    <form action="#" method="post">
+                    <form id="myForm" action="#" method="post">
                         <div class="row">
                             <div class="col-12 col-md-6">
                                 <div class="group">
-                                    <input type="text" name="name" id="name" required>
+                                    <input type="text" name="Name" id="name" required>
                                     <span class="highlight"></span>
                                     <span class="bar"></span>
                                     <label>İsim</label>
@@ -30,15 +29,15 @@
                             </div>
                             <div class="col-12 col-md-6">
                                 <div class="group">
-                                    <input type="email" name="email" id="email" required>
+                                    <input type="email" name="Email" id="email" required>
                                     <span class="highlight"></span>
                                     <span class="bar"></span>
                                     <label>Email</label>
                                 </div>
-                            </div>         
+                            </div>
                             <div class="col-12">
                                 <div class="group">
-                                    <textarea name="message" id="message" required></textarea>
+                                    <textarea name="Content" id="message" required></textarea>
                                     <span class="highlight"></span>
                                     <span class="bar"></span>
                                     <label>Mesaj</label>
@@ -48,6 +47,9 @@
                                 <button type="submit" class="btn original-btn">Gönder</button>
                             </div>
                         </div>
+                        <div style="display:none" id="infodiv" class="alert alert-success" role="alert">
+                            <span id="info"></span>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -55,8 +57,8 @@
             <div class="col-12 col-md-10 col-lg-3">
                 <div class="post-sidebar-area">
 
-           
-   
+
+
 
                     <!-- Widget Area -->
                     <div class="sidebar-widget-area">
@@ -87,3 +89,38 @@
     </div>
 </section>
 <!-- ##### Contact Area End ##### -->
+@section Scripts {
+
+    <script>
+        $('#myForm').submit(sendMessage);
+
+        function sendMessage(event) {
+            event.preventDefault();
+            var formData = $('#myForm').serialize();
+
+            $.ajax({
+                type: 'POST',
+                url: '/Contact/SendMessage',
+                data: formData,
+                success: function (response) {
+
+                    if (response == "Ok") {
+                        $('#info').text('Mesajınız alınmıştır');
+                    }
+                    else {
+                        $('#info').text('Bir Hata Oluştu Tekrar Deneyiniz');
+                    }
+                    $('#name').val("");
+                    $('#email').val("");
+                    $('#message').val("");
+                    $('#infodiv').show();
+                },
+                error: function (error) {
+
+                    console.error('Hata:', error);
+                }
+            });
+        }
+    </script>
+
+}
