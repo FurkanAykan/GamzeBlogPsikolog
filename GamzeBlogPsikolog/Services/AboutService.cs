@@ -26,10 +26,10 @@ namespace GamzeBlogPsikolog.Services
             var mappedLastThreePosts = _mapper.Map<List<BlogPostViewModel>>(lastThreePosts);
             aboutPageViewModel.Posts = mappedLastThreePosts;
 
-            //var about = await _aboutRepo.GetAll();
-            //var singleAbout = about.Take(1);
-            //var mappedAbout = _mapper.Map<AboutViewModel>(singleAbout);
-            //aboutPageViewModel.About = mappedAbout;
+            var about = await _aboutRepo.GetAll();
+            var singleAbout = about.Take(1).FirstOrDefault();
+            var mappedAbout = _mapper.Map<AboutViewModel>(singleAbout);
+            aboutPageViewModel.About = mappedAbout;
             return aboutPageViewModel;
         }
     }
