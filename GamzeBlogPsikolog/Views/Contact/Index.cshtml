@@ -2,11 +2,57 @@
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+    }
 
+    .container {
+        max-width: 800px;
+        margin: auto;
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .contact-info {
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+        .contact-info p {
+            margin-bottom: 10px;
+        }
+</style>
 <!-- ##### Google Map ##### -->
-<div class="map-area">
-    <div style="width: 100%"><iframe width="100%" height="600" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?width=100%25&amp;height=600&amp;hl=en&amp;q=istanbul+(My%20Business%20Name)&amp;t=&amp;z=14&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"><a href="https://www.maps.ie/population/">Calculate population in area</a></iframe></div>
+<div class="row contact-info">
+    <div class="col-5 d-flex justify-content-center">
+  
+            <div class="container">
+                <div class="contact-info">
+                <p><strong>Adres:</strong> Kısıklı Mah. Tepelik Sok. NO:16 Üsküdar/İstanbul</p>
+                <p><strong>Telefon:</strong> 0216 577 62 68</p>
+                <p><strong>Telefon:</strong>  0536 521 90 86</p>
+                <p><strong>Email:</strong>  psikologamzecoban@gmail.com</p>
+                </div>
+            </div>
+    
+    </div>
+    <div class="map-area col-6">
+        <div style="width: 100%"><iframe width="100%" height="400" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?width=100%25&amp;height=600&amp;hl=en&amp;q=istanbul+(My%20Business%20Name)&amp;t=&amp;z=14&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"><a href="https://www.maps.ie/population/">Calculate population in area</a></iframe></div>
+    </div>
 </div>
+
+
 
 <!-- ##### Contact Area Start ##### -->
 <section class="contact-area section-padding-100">

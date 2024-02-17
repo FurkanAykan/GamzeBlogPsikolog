@@ -7,6 +7,7 @@ using GamzeBlogPsikolog.EntityViewModels;
 using GamzeBlogPsikolog.Context;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using System.Xml;
 
 
 namespace GamzeBlogPsikolog.Services
@@ -29,11 +30,18 @@ namespace GamzeBlogPsikolog.Services
             _commentService = commentService;
         }
 
-        public async Task<List<BlogPostViewModel>> GetAllBlog()
+        public async Task<(List<BlogPostViewModel> blogPosts, int totalItems)> GetPaginatedBlogPosts(int pageNumber)
         {
-            var blogList = await _postory.GetAll();
-            return _mapper.Map<List<BlogPostViewModel>>(blogList);
+            int pageSize = 5; // Her sayfada gösterilecek blog gönderisi sayısı
 
+            var blogList = await _postory.GetAll(); // Tüm blog gönderilerini al
+            var totalItems = blogList.ToList().Count; // Toplam blog gönderi sayısı
+
+            var paginatedBlogPosts = blogList.Skip(totalItems - pageNumber * pageSize).Take(pageSize).ToList(); // Belirli sayfa ve sayfa boyutuna göre gönderileri al
+
+            var mappedBlogPosts = _mapper.Map<List<BlogPostViewModel>>(paginatedBlogPosts); // ViewModel'e dönüştür
+
+            return (mappedBlogPosts, totalItems); // Sayfalanan blog gönderilerini ve toplam öğe sayısını döndür
         }
 
         public async Task<BlogPostViewModel> GetBlogById(int id)
@@ -41,8 +49,10 @@ namespace GamzeBlogPsikolog.Services
             var blog = await _postory.GetByIdAsync(x => x.BlogId == id);
             BlogPostViewModel mappedBlog = _mapper.Map<BlogPostViewModel>(blog);
             List<CommentViewModel> allComment = await _commentService.GetAllCommentByPostId(id);
-           
+            var blogList = await _postory.GetAll();
+           var lastFourBlogPosts = blogList.TakeLast(4).ToList();
             mappedBlog.Comments = allComment;
+            mappedBlog.Blogs = _mapper.Map<List<BlogPostViewModel>>(lastFourBlogPosts);
             return mappedBlog;
 
         }
@@ -85,6 +95,25 @@ namespace GamzeBlogPsikolog.Services
                 BlogList = blog
             };
 
+        }
+        public async Task<BlogPostViewModel> RandomPost()
+        {
+            var blogList = await _postory.GetAll();   
+            var randomBlog = blogList.OrderBy(x => Guid.NewGuid()).FirstOrDefault();     
+
+            if (randomBlog != null)
+            {
+                return _mapper.Map<BlogPostViewModel>(randomBlog);
+
+            }
+            return null;
+        }
+        public async Task<List<BlogPostViewModel>> LastFiveBlog()
+        {
+            var blogList = await _postory.GetAll(null,null,x=>x.Comments);
+            var lastFiveBlogPosts = blogList.TakeLast(5).ToList();          
+            var blogs = _mapper.Map<List<BlogPostViewModel>>(lastFiveBlogPosts);
+            return blogs;
         }
     }
 }

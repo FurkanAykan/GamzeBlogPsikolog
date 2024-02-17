@@ -14,5 +14,6 @@ namespace GamzeBlogPsikolog.EntityViewModels
         public DateTime CreateDate { get; set; }
         public bool Status { get; set; }
         public List<CommentViewModel>? Comments { get; set; }
+        public List<BlogPostViewModel>? Blogs { get; set; }
     }
 }

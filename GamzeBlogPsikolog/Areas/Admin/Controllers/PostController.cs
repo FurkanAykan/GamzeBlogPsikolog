@@ -45,7 +45,7 @@ namespace GamzeBlogPsikolog.Areas.Admin.Controllers
             {
                 if (m.BlogId == 0)
                 {
-                    BlogPost deger =  mapper.Map<BlogPost>(m);
+                    BlogPost deger = mapper.Map<BlogPost>(m);
                     rp.Add(deger);
                     alert.Message = "Kayıt Başarıyla Eklendi.";
                 }
@@ -60,9 +60,9 @@ namespace GamzeBlogPsikolog.Areas.Admin.Controllers
         }
         [HttpPost]
         [Area("Admin")]
-        public IActionResult UploadImage(int id,IFormFile file, [FromServices] IWebHostEnvironment webHostEnvironment)
+        public IActionResult UploadImage(int id, IFormFile file, [FromServices] IWebHostEnvironment webHostEnvironment)
         {
-           
+
             if (file != null && file.Length > 0)
             {
                 // wwwroot dizini içindeki uploads ve thumb klasörlerini oluştur
@@ -110,7 +110,6 @@ namespace GamzeBlogPsikolog.Areas.Admin.Controllers
 
             return Json(null);
         }
-     
         [HttpGet]
         [Area("Admin")]
         public async Task<IActionResult> GetData(int id)
@@ -124,7 +123,7 @@ namespace GamzeBlogPsikolog.Areas.Admin.Controllers
         [HttpPost]
         public async Task<JsonResult> Delete(int postId)
         {
-            var blogPost = await rp.GetByIdAsync(x=>x.BlogId==postId);
+            var blogPost = await rp.GetByIdAsync(x => x.BlogId == postId);
 
             if (blogPost != null)
             {
@@ -146,4 +145,5 @@ namespace GamzeBlogPsikolog.Areas.Admin.Controllers
             return Json(new { success = true });
         }
     }
+    
 }

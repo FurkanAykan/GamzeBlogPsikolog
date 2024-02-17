@@ -18,8 +18,17 @@ namespace GamzeBlogPsikolog.Services
 
         public async Task Add(T entity)
         {
-            await _dbSet.AddAsync(entity); //async kayıt yapma
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _dbSet.AddAsync(entity); //async kayıt yapma
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                string msdf = ex.Message;
+                throw;
+            }
+          
         }
         public void Delete(T entity)
         {
