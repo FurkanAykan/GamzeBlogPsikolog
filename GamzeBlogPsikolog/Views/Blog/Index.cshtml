@@ -45,8 +45,7 @@
                                     @Html.Raw(blog.BlogContent)
                                 }
                                 <div class="post-meta">
-                                   
-                                    <p>Gamze Çoban</p>
+                                    <p><a href="/About">Gamze Çoban</a></p>                                  
                                 </div>
                             </div>
                         </div>
@@ -64,14 +63,14 @@
             <ul class="pagination justify-content-center">
                 <!-- Önceki sayfa butonu -->
                 <li class="page-item @(currentPage == 1 ? "disabled" : "")">
-                    <a class="page-link" href="?pageNumber=@(currentPage - 1)" aria-label="Previous">
+                    <a class="page-link" href="/blog/Index/@(currentPage - 1)" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
 
                 <!-- İlk sayfa -->
                 <li class="page-item @(currentPage == 1 ? "active" : "")">
-                    <a class="page-link" href="?pageNumber=1">1</a>
+                    <a class="page-link" href="/blog/Index/1">1</a>
                 </li>
 
                 <!-- Aradaki sayfalar (1 2 ... 7 8 ...) -->
@@ -85,7 +84,7 @@
                     for (int i = Math.Max(2, currentPage - 2); i <= Math.Min(currentPage + 2, totalPages - 1); i++)
                     {
                         <li class="page-item @(currentPage == i ? "active" : "")">
-                            <a class="page-link" href="?pageNumber=@i">@i</a>
+                            <a class="page-link" href="/blog/Index/@i">@i</a>
                         </li>
                     }
 
@@ -99,13 +98,13 @@
                 @if (totalPages > 1)
                 {
                     <li class="page-item @(currentPage == totalPages ? "active" : "")">
-                        <a class="page-link" href="?pageNumber=@totalPages">@totalPages</a>
+                        <a class="page-link" href="/blog/Index/@totalPages">@totalPages</a>
                     </li>
                 }
 
                 <!-- Sonraki sayfa butonu -->
                 <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
-                    <a class="page-link" href="?pageNumber=@(currentPage + 1)" aria-label="Next">
+                    <a class="page-link" href="/blog/Index/@(currentPage + 1)" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>
