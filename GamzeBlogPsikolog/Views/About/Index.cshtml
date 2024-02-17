@@ -4,7 +4,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <style>
-    .hakkinda{
+    .hakkinda {
         font-size: 3rem;
         text-align: center;
         color: beige;
@@ -29,21 +29,21 @@
 <!-- ##### Blog Wrapper Start ##### -->
 <div class="blog-wrapper section-padding-100-0 clearfix ">
     <div class="row justify-content-center">
-    <div class="col-5 col-sm-10 col-md-8 col-lg-6 col-xl-5">
-        <div class="single-blog-area clearfix mb-100">
-            <div class="single-blog-content">
-                <div class="line"></div>
-                <h4><a href="#" class="post-headline">@Model.About.AboutTitle</a></h4>
-                <p class="mb-3">@Html.Raw(@Model.About.AboutContent)</p>
+        <div class="col-5 col-sm-12 col-md-8 col-lg-6 col-xl-5">
+            <div class="single-blog-area clearfix mb-100">
+                <div class="single-blog-content">
+                    <div class="line"></div>
+                    <h4><a href="#" class="post-headline">@Model.About.AboutTitle</a></h4>
+                    <p class="mb-3">@Html.Raw(@Model.About.AboutContent)</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-3 col-sm-12 col-md-4 col-lg-3 col-xl-3">
+            <div class="single-catagory-area clearfix mb-100">
+                <img src="@Model.About.AboutImage" alt="">
             </div>
         </div>
     </div>
-    <div class="col-3 col-sm-6 col-md-4 col-lg-3 col-xl-3">
-        <div class="single-catagory-area clearfix mb-100">
-            <img src="@Model.About.AboutImage" alt="">
-        </div>
-    </div>
-</div>
 
 </div>
 <!-- ##### Blog Wrapper End ##### -->
@@ -64,10 +64,10 @@
                         </div>
                         <!-- Blog Content -->
                         <div class="single-blog-content mt-50">
-                            <div class="line"></div>                     
+                            <div class="line"></div>
                             <h4><a href="#" class="post-headline">@blog.BlogTitle</a></h4>
-                           
-                            
+
+
                         </div>
                     </div>
                 </div>

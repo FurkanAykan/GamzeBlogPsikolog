@@ -3,17 +3,26 @@
     ViewData["Title"] = "BlogDetail";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
 
+</style>
 <!-- ##### Single Blog Area Start ##### -->
 <div class="single-blog-wrapper section-padding-0-100">
 
+  @*   <div class="breadcumb-area bg-img" style="background-image: url(@Model.BlogImage);">
+        <div class="container h-100">
+            <div class="row h-100 align-items-center">
+               
+            </div>
+        </div>
+    </div> *@
     <!-- Single Blog Area  -->
     <div class="single-blog-area blog-style-2 mb-50">
         <div class="single-blog-thumbnail">
-            <img style="width:60%;" src=@Model.BlogImage alt="">
-            <div class="post-tag-content">
-                <div class="container">
-                    <div class="row">
+            <div class="breadcumb-area bg-img" style="background-image: url(@Model.BlogImage);height: 20rem;">
+                <div class="container h-100">
+                    <div class="row h-100 align-items-center">
+                        <!-- Tarih alanını buraya taşıdık -->
                         <div class="col-12">
                             <div class="post-date">
                                 <a href="#">@Model.CreateDate.Day <span>@Model.CreateDate.ToString("MMMM") @Model.CreateDate.ToString("yyyy")</span></a>
@@ -24,6 +33,7 @@
             </div>
         </div>
     </div>
+
 
     <div class="container">
         <div class="row">

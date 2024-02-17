@@ -26,7 +26,7 @@ namespace GamzeBlogPsikolog.Areas.Admin.Controllers
         }
         [Area("Admin")]
         [HttpGet]
-        public async Task<IActionResult> Index(int? id)
+        public async Task<IActionResult> PostIndex(int? id)
         {
             int pageNo = id ?? 1;
             int pageSize = 10;
