@@ -1,12 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace GamzeBlogPsikolog.Entity
+﻿namespace GamzeBlogPsikolog.EntityViewModels
 {
-    public class About
+    public class AdminAboutViewModel
     {
-        [Key]
         public int AboutId { get; set; }
-        public string? AboutTitle { get; set;}
+        public string? AboutTitle { get; set; }
         public string? AboutImage { get; set; }
         public string? AboutContent { get; set; }
         public string? AbountSubTitle { get; set; }
