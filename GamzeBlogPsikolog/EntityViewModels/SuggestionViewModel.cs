@@ -8,7 +8,7 @@ namespace GamzeBlogPsikolog.EntityViewModels
         public string SuggestionTitle { get; set; }
         public string SuggestionDescription { get; set; }
         public string SuggestionImage { get; set; }
-        public string MovieUrl { get; set; }
+        public string? MovieUrl { get; set; }
         public int OgrId { get; set; }
     }
 }

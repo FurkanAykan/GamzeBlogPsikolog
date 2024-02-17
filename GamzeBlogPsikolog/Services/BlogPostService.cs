@@ -98,7 +98,7 @@ namespace GamzeBlogPsikolog.Services
         }
         public async Task<BlogPostViewModel> RandomPost()
         {
-            var blogList = await _postory.GetAll();   
+            var blogList = await _postory.GetAll(x=>x.Status==true);   
             var randomBlog = blogList.OrderBy(x => Guid.NewGuid()).FirstOrDefault();     
 
             if (randomBlog != null)
@@ -110,7 +110,7 @@ namespace GamzeBlogPsikolog.Services
         }
         public async Task<List<BlogPostViewModel>> LastFiveBlog()
         {
-            var blogList = await _postory.GetAll(null,null,x=>x.Comments);
+            var blogList = await _postory.GetAll(x=>x.Status==true,null,x=>x.Comments);
             var lastFiveBlogPosts = blogList.TakeLast(5).ToList();          
             var blogs = _mapper.Map<List<BlogPostViewModel>>(lastFiveBlogPosts);
             return blogs;
