@@ -34,7 +34,7 @@
                         <h5 class="title">Subscribe to my newsletter</h5>
                         <form action="#" class="newsletterForm" method="post">
                             <input type="email" name="email" id="subscribesForm2" placeholder="Your e-mail here">
-                            <button type="submit" class="btn original-btn">Subscribe</button>
+                            <button type="submit" class="btn original-btn">Abone Ol!</button>
                         </form>
                     </div>
                 </div>
@@ -75,13 +75,14 @@
         <!-- Logo Area Start -->
         <div class="logo-area text-center">
             <div class="container h-100">
-                <div class="row h-100 align-items-center">
+                <div class="row h-100 align-items-center" >
                     <div class="col-12">
-                        <a href="index.html" class="original-logo"><img src="~/Theme/img/core-img/logo.png" alt=""></a>
+                        <a href="index.html" class="original-logo"><img style="width:15rem; margin-top:-3.5rem;" src="~/logo/oie_transparent.png" alt=""></a>
                     </div>
                 </div>
             </div>
         </div>
+        <br />
         <!-- Logo Area End-->
         <!-- Navbar Start -->
         <div class="original-nav-area" id="stickyNav">
@@ -92,7 +93,7 @@
 
                         <!-- Subscribe btn -->
                         <div class="subscribe-btn">
-                            <a href="#" class="btn subscribe-btn" data-toggle="modal" data-target="#subsModal">Subscribe</a>
+                            <a href="#" class="btn subscribe-btn" data-toggle="modal" data-target="#subsModal">Abone Ol!</a>
                         </div>
 
                         <!-- Navbar Toggler -->
@@ -112,7 +113,13 @@
                                 <ul>
                                     <li><a asp-action="Index" asp-controller="Home">Anasayfa</a></li>
                                     <li><a asp-action="Index" asp-controller="Blog">Bloglar</a></li>
-                                    <li><a asp-action="Index" asp-controller="About">Hakkımda</a></li>
+                                    <li>
+                                        <a href="/about/index">Hakkımda</a>
+                                        <ul class="dropdown">
+                                            <li><a href="/education/index">Eğitimler</a></li>
+                                            <li><a href="/test/index">Testler</a></li>
+                                        </ul>
+                                    </li>
                                     <li><a asp-action="Index" asp-controller="Contact">İletişim</a></li>
                                     <li>
                                         <a href="#">Pages</a>

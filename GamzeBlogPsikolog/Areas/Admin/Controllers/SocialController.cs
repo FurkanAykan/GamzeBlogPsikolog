@@ -19,7 +19,7 @@ namespace GamzeBlogPsikolog.Areas.Admin.Controllers
             _mapper = mapper;
         }
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> SocialIndex()
         {
             var socialAll = await srp.GetByIdAsync(x => x.SocialId == 2);
             var social = _mapper.Map<SocialViewModel>(socialAll);

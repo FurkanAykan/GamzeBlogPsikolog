@@ -54,18 +54,19 @@
     int deger = (int)ViewBag.pagenumber;
 }
 @* List Start *@
-<div class="main-panel">
-    <div class="content-wrapper">
-        <div class="row" style="display:grid">
+
             <div class="col-12 grid-margin stretch-card">
                 <!-- Updated the class from "col-lg-6" to "col-12" to take up the full width -->
                 <div class="card">
                     <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h4 class="card-title">Blog Listesi</h4>
-                            <input type="button" class="btn btn-gradient-primary" id="btnsubmit" value="Eke" />
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h4 class="card-title">Blog Listesi</h4>
+                            </div>
+                            <div class="col-md-6 d-flex justify-content-end">
+                                <input type="button" class="btn btn-gradient-info btn-sm"                       id="btnsubmit" value="Ekle" />
+                            </div>
                         </div>
-
                         <div class="table-responsive">
                             <table class="table table-striped">
                                 <thead>
@@ -92,10 +93,10 @@
                                             <td>@post.BlogTitle</td>
                                             <td>@post.CreateDate.ToShortDateString()</td>
                                             <td><label class="badge badge-@(post.Status?"success":"danger")">@(post.Status ? "Yayında" : "Yayında Değil")</label></td>
-                                            <td><input type="submit" class="btn btn-warning" id="btnEdit" onclick="blogEdit('@post.BlogId')" value="Güncelle" /></td>
+                                            <td><input type="submit" class="btn btn-warning btn-sm" id="btnEdit" onclick="blogEdit('@post.BlogId')" value="Güncelle" /></td>
 
                                             <td>
-                                                <button class="btn btn-@(post.Status ? "danger" : "success") changeStatu" data-post-id="@post.BlogId">
+                                                <button class="btn btn-@(post.Status ? "danger" : "success")  btn-sm changeStatu" data-post-id="@post.BlogId">
                                                     @(post.Status ? "Yayından Kaldır" : "Yayına Al")
                                                 </button>
                                             </td>
@@ -112,6 +113,7 @@
 
                                 </tbody>
                             </table>
+
                         </div>
 
                         <div class="pagination">
@@ -143,9 +145,7 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
+       
 @* List End *@
 
 @* Modal Start *@
@@ -299,14 +299,14 @@
                         dataType: "json",
                         data: JSON.stringify(postDatas),
                         success: function (response) {
-                            $('#myModal').modal('hide');
-                            // Swal.fire({
-                            //     icon: 'success',
-                            //     title: 'Başarılı',
-                            //     text: 'Kayıt Başarıyla Eklendi!',
-                            //     timer: 3000,
-                            //     showConfirmButton: false
-                            // });
+                            // $('#myModal').modal('hide');
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Başarılı',
+                                text: 'Kayıt Başarıyla Eklendi!',
+                                timer: 3000,
+                                showConfirmButton: false
+                            });
                             location.reload();
 
                         },
@@ -394,7 +394,6 @@
                         contentType: "application/json; charset=utf-8",
                         dataType: "json",
                         success: function (response) {
-                            $('#myModal').modal('hide');
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Başarılı',
@@ -402,7 +401,7 @@
                                 timer: 3000,
                                 showConfirmButton: false
                             });
-                            location.reload;
+                            location.reload();
                         },
                         error: function (error) {
                             Swal.fire({

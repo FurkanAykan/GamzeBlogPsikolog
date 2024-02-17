@@ -3,18 +3,30 @@
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
+    .hakkinda {
+        font-size: 3rem;
+        text-align: center;
+        color: beige;
+        font-family: emoji;
+    }
+</style>
 <!-- ##### Breadcumb Area Start ##### -->
-<div class="breadcumb-area bg-img" style="background-image: url(img/bg-img/b1.jpg);">
+<div class="breadcumb-area bg-img" style="background-color:lightslategray">
     <div class="container h-100">
         <div class="row h-100 align-items-center">
             <div class="col-12">
-                <div class="breadcumb-content text-center">
-                    <h2>Bloglarım</h2>
+                <div>
+                    <h2 class="hakkinda">
+                        BLOGLARIM
+                    </h2>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<br />
+<hr />
 <!-- ##### Breadcumb Area End ##### -->
 <div class="container">
     <div class="row">
@@ -25,7 +37,9 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="single-blog-thumbnail">
-                                <a asp-controller="Blog" asp-action="BlogDetail" asp-route-id="@blog.BlogId">  <img src=@blog.BlogImage alt=""></a>
+                                <a asp-controller="Blog" asp-action="BlogDetail" asp-route-id="@blog.BlogId">
+                                    <img src=@blog.BlogImage alt="" style="max-width: 60rem;height: 100%;">
+                                </a>
                                 <div class="post-date">
                                     <a href="#">@blog.CreateDate.Day <span>@blog.CreateDate.ToString("MMMM") @blog.CreateDate.ToString("yyyy")</span></a>
                                 </div>

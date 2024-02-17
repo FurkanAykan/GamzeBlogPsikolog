@@ -23,7 +23,7 @@ namespace GamzeBlogPsikolog.Areas.Admin.Controllers
             this.aboutService = aboutService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> AboutIndex()
         {
             var hakkindaDeger = await _about.GetByIdAsync(x=>x.AboutId==1);
             var mapHakkinda = mapper.Map<AdminAboutViewModel>(hakkindaDeger);
