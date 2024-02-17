@@ -15,7 +15,11 @@ namespace GamzeBlogPsikolog.Mapping
             CreateMap<ContactMessage, MessageViewModel>().ReverseMap();
             CreateMap<About, AboutViewModel>().ReverseMap();
             CreateMap<About, AdminAboutViewModel>().ReverseMap();
+
             CreateMap<Education, EducationViewModel>().ReverseMap();
+
+            CreateMap<Suggestion, SuggestionViewModel>().ReverseMap();
+
         }
     }
 }

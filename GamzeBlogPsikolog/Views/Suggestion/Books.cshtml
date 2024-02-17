@@ -1,0 +1,135 @@
+﻿@model List<SuggestionViewModel>
+@{
+    ViewData["Title"] = "Books";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .hakkinda {
+        font-size: 3rem;
+        text-align: center;
+        color: beige;
+        font-family: emoji;
+    }
+
+    .card {
+        transition: transform 0.3s;
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        }
+
+            .card:hover .card-body {
+                background-color: lightgray; /* Gri tonu, istediğiniz rengi kullanabilirsiniz */
+            }
+</style>
+<!-- ##### Breadcumb Area Start ##### -->
+<div class="breadcumb-area bg-img" style="background-color:lightslategray">
+    <div class="container h-100">
+        <div class="row h-100 align-items-center">
+            <div class="col-12">
+                <div>
+                    <h2 class="hakkinda">
+                        Kitap Önerileri
+                    </h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <a asp-controller="Suggestion" asp-action="BookDetail" asp-route-id="@item.SuggestionId">
+                <div class="col-md-4 mt-5">
+                    <!-- 3 kart her satırda görünsün, bu yüzden col-md-4 kullandık -->
+                    <div class="card" style="width: 18rem;">
+                        <img src=@item.SuggestionImage class="card-img-top" alt="...">
+
+                        <div class="card-body">
+                            <h5 class="card-title">@item.SuggestionTitle</h5>
+                            @if (item.SuggestionDescription.Length > 100)
+                            {
+                                <p class="card-text">
+                                    @Html.Raw(item.SuggestionDescription.Substring(0, 100) + "...")
+                                </p>
+                            }
+                            else
+                            {
+                                <p class="card-text">
+                                    @Html.Raw(item.SuggestionDescription)
+                                </p>
+                            }
+                            <a href="#" class="btn btn-primary">Detaylar</a>
+                        </div>
+
+                    </div>
+                </div>
+            </a>
+        }
+    </div>
+    <div class="m-5">
+        @if (ViewBag.totalItem > 0)
+        {
+            int totalPages = (int)Math.Ceiling((double)ViewBag.totalItem / 5); // Her sayfada 5 blog gönderisi olduğu varsayıldı
+            int currentPage = ViewBag.pageNumber;
+
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    <!-- Önceki sayfa butonu -->
+                    <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                        <a class="page-link" href="/movie/Index/@(currentPage - 1)" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+
+                    <!-- İlk sayfa -->
+                    <li class="page-item @(currentPage == 1 ? "active" : "")">
+                        <a class="page-link" href="/movie/Index/1">1</a>
+                    </li>
+
+                    <!-- Aradaki sayfalar (1 2 ... 7 8 ...) -->
+                    @if (totalPages > 2)
+                    {
+                        if (currentPage > 3)
+                        {
+                            <li class="page-item disabled"><a class="page-link" href="#">...</a></li>
+                        }
+
+                        for (int i = Math.Max(2, currentPage - 2); i <= Math.Min(currentPage + 2, totalPages - 1); i++)
+                        {
+                            <li class="page-item @(currentPage == i ? "active" : "")">
+                                <a class="page-link" href="/movie/Index/@i">@i</a>
+                            </li>
+                        }
+
+                        if (currentPage < totalPages - 2)
+                        {
+                            <li class="page-item disabled"><a class="page-link" href="#">...</a></li>
+                        }
+                    }
+
+                    <!-- Son sayfa -->
+                    @if (totalPages > 1)
+                    {
+                        <li class="page-item @(currentPage == totalPages ? "active" : "")">
+                            <a class="page-link" href="/movie/Index/@totalPages">@totalPages</a>
+                        </li>
+                    }
+
+                    <!-- Sonraki sayfa butonu -->
+                    <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                        <a class="page-link" href="/movie/Index/@(currentPage + 1)" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        }
+    </div>
+</div>
+
+

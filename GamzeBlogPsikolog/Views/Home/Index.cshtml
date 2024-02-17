@@ -85,7 +85,7 @@
                                 <!-- Blog Content -->
                                 <div class="single-blog-content">
                                     <div class="line"></div>
-                             
+
                                     <h4><a href="#" class="post-headline">@blog.BlogTitle</a></h4>
                                     @if (blog.BlogContent.Length > 200)
                                     {
@@ -96,7 +96,7 @@
                                         @Html.Raw(blog.BlogContent)
                                     }
                                     <div class="post-meta">
-                                        <p><a href="#">Gamze Çoban</a></p>
+                                        <p><a href="/About">Gamze Çoban</a></p>                                       
                                         <p>@blog.Comments.Count() Yorum</p>
                                     </div>
                                 </div>
@@ -215,13 +215,13 @@
                                 @using System.Globalization
                                 @foreach (var blog in Model.Posts)
                                 {
-                                    
-                               
-                                @foreach (var tag in blog.BlogTag.Split(','))
-                                {
-                                    string capitalizedTag = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(tag.Trim());
-                                    <li><a href="#">@capitalizedTag</a></li>
-                                }
+
+
+                                    @foreach (var tag in blog.BlogTag.Split(','))
+                                    {
+                                        string capitalizedTag = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(tag.Trim());
+                                        <li><a href="#">@capitalizedTag</a></li>
+                                    }
                                 }
                             </ul>
                         </div>
