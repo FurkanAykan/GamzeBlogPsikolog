@@ -23,7 +23,6 @@
         </div>
     </div>
     <!-- Loader End -->
-
     <!-- Subscribe Modal Start -->
     <div class="subscribe-newsletter-area">
         <div class="modal fade" id="subsModal" tabindex="-1" role="dialog" aria-labelledby="subsModal" aria-hidden="true">
@@ -31,9 +30,9 @@
                 <div class="modal-content">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <div class="modal-body">
-                        <h5 class="title">Subscribe to my newsletter</h5>
-                        <form action="#" class="newsletterForm" method="post">
-                            <input type="email" name="email" id="subscribesForm2" placeholder="Your e-mail here">
+                        <h5 class="title">Yeniliklerden Haberdar Olun</h5>
+                        <form action="#" class="newsletterForm" method="post" onsubmit="return handleSubmit()">
+                            <input type="email" name="email" id="subscribesForm2" placeholder="Email adresiniz" required>
                             <button type="submit" class="btn original-btn">Abone Ol!</button>
                         </form>
                     </div>
@@ -42,7 +41,6 @@
         </div>
     </div>
     <!-- Subscribe Modal End -->
-
     <!-- ##### Header Area Start ##### -->
     <header class="header-area">
         <!-- Top Menu Start -->
@@ -65,7 +63,7 @@
                     <!-- Top Social Area -->
                     <div class="col-12 col-sm-4">
                         <div class="top-social-area">
-                           <vc:social></vc:social>
+                            <vc:social></vc:social>
                         </div>
                     </div>
                 </div>
@@ -75,9 +73,9 @@
         <!-- Logo Area Start -->
         <div class="logo-area text-center">
             <div class="container h-100">
-                <div class="row h-100 align-items-center" >
+                <div class="row h-100 align-items-center">
                     <div class="col-12">
-                        <a href="index.html" class="original-logo"><img style="width:15rem; margin-top:-3.5rem;" src="~/logo/oie_transparent.png" alt=""></a>
+                        <a href="/Home" class="original-logo"><img style="width:15rem; margin-top:-3.5rem;" src="~/logo/oie_transparent.png" alt=""></a>
                     </div>
                 </div>
             </div>
@@ -135,8 +133,9 @@
 
                                 <!-- Search Form  -->
                                 <div id="search-wrapper">
-                                    <form action="#">
-                                        <input type="text" id="search" placeholder="Search something...">
+                                    
+                                    <form asp-controller="Blog" asp-action="Index" method="get">
+                                        <input type="text" id="search" name="search" placeholder="Blog arayın...">
                                         <div id="close-icon"></div>
                                         <input class="d-none" type="submit" value="">
                                     </form>
@@ -151,10 +150,9 @@
         <!-- Navbar End -->
     </header>
     <!-- ##### Header Area End ##### -->
-
     @RenderBody()
 
-  
+
     @Html.Partial("_Footer")
     <!-- jQuery (Necessary for All JavaScript Plugins) -->
     <script src="~/Theme/js/jquery/jquery-2.2.4.min.js"></script>
@@ -168,6 +166,29 @@
     <!-- Active js -->
     <script src="~/Theme/js/active.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        function handleSubmit() {
+            var email = $('#subscribesForm2').val();
+       
+            $.ajax({
+                type: 'POST',
+                url: '/Contact/NewsLatter',
+                contentType: 'application/x-www-form-urlencoded', // Değiştirildi
+                data: { email: email }, // JSON.stringify kaldırıldı
+                success: function (response) {
+                    alert("Kayıt olduğunuz için teşekkürler.")
+                    $('#subsModal').modal('hide');
+                },
+                error: function (error) {
+                    console.error('Hata:', error);
+                }
+            });
+
+            return false;
+        }       
+
+
+    </script>
 </body>
 
 </html>

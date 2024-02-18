@@ -48,6 +48,7 @@ namespace GamzeBlogPsikolog.Areas.Admin.Controllers
                     BlogPost deger = mapper.Map<BlogPost>(m);
                     rp.Add(deger);
                     alert.Message = "Kayıt Başarıyla Eklendi.";
+                    blogPostService.SendMail(deger);
                 }
                 else
                 {

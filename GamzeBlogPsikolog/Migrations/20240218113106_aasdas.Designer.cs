@@ -4,6 +4,7 @@ using GamzeBlogPsikolog.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GamzeBlogPsikolog.Migrations
 {
     [DbContext(typeof(GamzeBlogContext))]
-    partial class GamzeBlogContextModelSnapshot : ModelSnapshot
+    [Migration("20240218113106_aasdas")]
+    partial class aasdas
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -304,17 +307,6 @@ namespace GamzeBlogPsikolog.Migrations
                     b.Property<int>("OgrId")
                         .HasColumnType("int");
 
-
-                    b.Property<bool>("Statu")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("SuggestionDescription")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SuggestionImage")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SuggestionTitle")
                     b.Property<string>("SuggestionDescription")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

@@ -13,14 +13,16 @@ namespace GamzeBlogPsikolog.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IGenericRepostory<Slider> _slider;
         private readonly IBlogPostService _blogService;
+        private readonly IMovieService _movieService;
         private readonly IMapper _mapper;
 
-        public HomeController(ILogger<HomeController> logger, IGenericRepostory<Slider> slider, IMapper mapper, IBlogPostService blogService)
+        public HomeController(ILogger<HomeController> logger, IGenericRepostory<Slider> slider, IMapper mapper, IBlogPostService blogService, IMovieService movieService)
         {
             _logger = logger;
             _slider = slider;
             _mapper = mapper;
             _blogService = blogService;
+            _movieService = movieService;
         }
 
         public async Task<IActionResult> Index()
@@ -31,7 +33,9 @@ namespace GamzeBlogPsikolog.Controllers
             {
                 Slider = sliderList,
                 RandomPost = await _blogService.RandomPost(),
-                Posts= await _blogService.LastFiveBlog()                
+                Posts= await _blogService.LastFiveBlog(),
+                Suggestions= await _movieService.GetRandom()
+                
             };
             return View(model);
  

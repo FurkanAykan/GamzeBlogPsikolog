@@ -29,9 +29,9 @@ namespace GamzeBlogPsikolog.Services
 
             return (mappedMovies, totalItems); // Sayfalanan filmleri ve toplam öğe sayısını döndür
         }
-        public async Task<SuggestionViewModel> GetById(int id, int ogrId)
+        public async Task<SuggestionViewModel> GetById(int id)
         {
-            var moive = await _Movierepo.GetByIdAsync(x => x.SuggestionId == id && x.OgrId==ogrId);
+            var moive = await _Movierepo.GetByIdAsync(x => x.SuggestionId == id);
             var mappedMovie = _mapper.Map<SuggestionViewModel>(moive);
             return mappedMovie;
         }
@@ -111,5 +111,23 @@ namespace GamzeBlogPsikolog.Services
             return newSuggestion;
         }
 
+        public async Task<List<SuggestionViewModel>> GetRandom()
+        {
+            var sug = await _Movierepo.GetAll();
+            var mapped= _mapper.Map<List<SuggestionViewModel>>(sug);
+            if (mapped.Count <= 5)
+            {
+                return mapped;
+            }
+            else
+            {
+                // LINQ kullanarak blogList'ten rastgele 5 eleman seç
+                var random = new Random();
+                var randomBlogs = mapped.OrderBy(x => random.Next()).Take(5).ToList();
+
+                return randomBlogs;
+            }
+
+        }
     }
 }
