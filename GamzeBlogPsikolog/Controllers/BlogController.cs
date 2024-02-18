@@ -36,6 +36,7 @@ namespace GamzeBlogPsikolog.Controllers
             ViewBag.pageNumber = id;
             return View(blogList);
         }
+        [HttpGet]
         public async Task<IActionResult> BlogDetail(int id)
         {
             var blog = await _blogPostService.GetBlogById(id);

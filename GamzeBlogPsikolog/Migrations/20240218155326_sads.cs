@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace GamzeBlogPsikolog.Migrations
 {
     /// <inheritdoc />
-    public partial class asd : Migration
+    public partial class sads : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -120,6 +120,19 @@ namespace GamzeBlogPsikolog.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "NewsLatters",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_NewsLatters", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Sliders",
                 columns: table => new
                 {
@@ -159,11 +172,12 @@ namespace GamzeBlogPsikolog.Migrations
                 {
                     SuggestionId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    SuggestionTitle = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SuggestionDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SuggestionImage = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SuggestionTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SuggestionDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SuggestionImage = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     MovieUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    OgrId = table.Column<int>(type: "int", nullable: false)
+                    OgrId = table.Column<int>(type: "int", nullable: false),
+                    Statu = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -402,6 +416,9 @@ namespace GamzeBlogPsikolog.Migrations
 
             migrationBuilder.DropTable(
                 name: "Educations");
+
+            migrationBuilder.DropTable(
+                name: "NewsLatters");
 
             migrationBuilder.DropTable(
                 name: "ReplyComments");

@@ -46,6 +46,7 @@ namespace GamzeBlogPsikolog.Services
         {
             var suggestions = await _Movierepo.GetAll(x=>x.OgrId==id);
             var mapsuggestions = _mapper.Map<List<SuggestionViewModel>>(suggestions);
+            mapsuggestions.Reverse();
             return mapsuggestions;
         }
         public async Task<SuggestionViewModel> GetByIdAsync(int id)

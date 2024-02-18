@@ -4,6 +4,7 @@
 }
 
 <style>
+    
     /* Add this CSS to make the modal full-width */
     .modal-fullpage {
         width: 100vw;
@@ -162,6 +163,7 @@
                     url: "/Admin/Suggestion/GetAll/" + selectedValue,
                     method: 'GET',
                     success: function (data) {
+                        console.log(data);
                         var tableBody = '';
                         data.forEach(function (post, index) {
                             var statusLabel = post.statu ? "Yayında" : "Yayında Değil";

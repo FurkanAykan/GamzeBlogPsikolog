@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GamzeBlogPsikolog.Migrations
 {
     [DbContext(typeof(GamzeBlogContext))]
-    [Migration("20240218113819__suggest")]
-    partial class _suggest
+    [Migration("20240218155326_sads")]
+    partial class sads
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -177,6 +177,23 @@ namespace GamzeBlogPsikolog.Migrations
                     b.HasKey("EducationId");
 
                     b.ToTable("Educations");
+                });
+
+            modelBuilder.Entity("GamzeBlogPsikolog.Entity.NewsLatter", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("NewsLatters");
                 });
 
             modelBuilder.Entity("GamzeBlogPsikolog.Entity.ReplyComment", b =>
