@@ -26,7 +26,7 @@ namespace GamzeBlogPsikolog.Controllers
         }
         public async Task<IActionResult> MovieDetail(int id)
         {
-            var movie = await _movieService.GetById(id,1);
+            var movie = await _movieService.GetById(id);
             return View(movie);
         }
         public async Task<IActionResult> Games(int id)
@@ -42,7 +42,7 @@ namespace GamzeBlogPsikolog.Controllers
         }
         public async Task<IActionResult> GameDetail(int id)
         {
-            var game = await _movieService.GetById(id, 2);
+            var game = await _movieService.GetById(id);
             return View(game);
         }
         public async Task<IActionResult> Books(int id)
@@ -58,7 +58,7 @@ namespace GamzeBlogPsikolog.Controllers
         }
         public async Task<IActionResult> BookDetail(int id)
         {
-            var game = await _movieService.GetById(id, 3);
+            var game = await _movieService.GetById(id);
             return View(game);
         }
     }

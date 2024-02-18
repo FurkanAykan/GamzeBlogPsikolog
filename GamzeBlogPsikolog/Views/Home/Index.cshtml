@@ -35,11 +35,11 @@
         <div class="row justify-content-center">
             <!-- Single Blog Area -->
             <div class="col-sm-12 col-md-12 col-lg-7 col-xl-7">
-                <div class="single-blog-area clearfix mb-100" >
+                <div class="single-blog-area clearfix mb-100">
                     <!-- Blog Content -->
-                    <div class="single-blog-content" >
+                    <div class="single-blog-content">
                         <div class="line"></div>
-                        <h4><a href="#" class="post-headline">@Model.RandomPost.BlogTitle</a></h4>
+                        <h4><a asp-controller="Blog" asp-action="BlogDetail" asp-route-id="@Model.RandomPost.BlogId" class="post-headline">@Model.RandomPost.BlogTitle</a></h4>
                         @if (Model.RandomPost.BlogContent.Length > 200)
                         {
                             @Html.Raw(Model.RandomPost.BlogContent.Substring(0, 300) + "...")
@@ -49,7 +49,7 @@
                             @Html.Raw(Model.RandomPost.BlogContent)
                         }
                         <div>
-                            <a href="#" class="btn original-btn">Devamını Oku</a>
+                            <a asp-controller="Blog" asp-action="BlogDetail" asp-route-id="@Model.RandomPost.BlogId" class="btn original-btn">Devamını Oku</a>
                         </div>
                     </div>
                 </div>
@@ -57,8 +57,9 @@
             <!-- Single Blog Area -->
             <div class="col-sm-12 col-md-12 col-lg-5 col-xl-5">
                 <div class="single-catagory-area clearfix mb-100">
-                    <img src=@Model.RandomPost.BlogImage alt="">
-
+                    <a asp-controller="Blog" asp-action="BlogDetail" asp-route-id="@Model.RandomPost.BlogId">
+                        <img src=@Model.RandomPost.BlogImage alt="">
+                    </a>
                 </div>
             </div>
 
@@ -75,9 +76,11 @@
                         <div class="row align-items-center">
                             <div class="col-12 col-md-6">
                                 <div class="single-blog-thumbnail">
-                                    <img src=@blog.BlogImage alt="">
+                                    <a asp-controller="Blog" asp-action="BlogDetail" asp-route-id="@blog.BlogId">
+                                        <img src=@blog.BlogImage alt="">
+                                    </a>
                                     <div class="post-date">
-                                        <a href="#">@blog.CreateDate.Day <span>@blog.CreateDate.ToString("MMMM") @blog.CreateDate.ToString("yyyy")</span></a>
+                                        <a asp-controller="Blog" asp-action="BlogDetail" asp-route-id="@blog.BlogId">@blog.CreateDate.Day <span>@blog.CreateDate.ToString("MMMM") @blog.CreateDate.ToString("yyyy")</span></a>
                                     </div>
                                 </div>
                             </div>
@@ -86,7 +89,7 @@
                                 <div class="single-blog-content">
                                     <div class="line"></div>
 
-                                    <h4><a href="#" class="post-headline">@blog.BlogTitle</a></h4>
+                                    <h4><a asp-controller="Blog" asp-action="BlogDetail" asp-route-id="@blog.BlogId" class="post-headline">@blog.BlogTitle</a></h4>
                                     @if (blog.BlogContent.Length > 200)
                                     {
                                         @Html.Raw(blog.BlogContent.Substring(0, 200) + "...")
@@ -96,8 +99,8 @@
                                         @Html.Raw(blog.BlogContent)
                                     }
                                     <div class="post-meta">
-                                        <p><a href="/About">Gamze Çoban</a></p>                                       
-                                        <p>@blog.Comments.Count() Yorum</p>
+                                        <p><a href="/About">Gamze Çoban</a></p>
+                                        <p><a asp-controller="Blog" asp-action="BlogDetail" asp-route-id="@blog.BlogId">@blog.Comments.Count() Yorum</a></p>
                                     </div>
                                 </div>
                             </div>
@@ -115,95 +118,62 @@
             <div class="col-12 col-md-4 col-lg-3">
                 <div class="post-sidebar-area">
 
-                    <!-- Widget Area -->
-                    <div class="sidebar-widget-area">
-                        <form action="#" class="search-form">
-                            <input type="search" name="search" id="searchForm" placeholder="Search">
-                            <input type="submit" value="submit">
-                        </form>
-                    </div>
 
-                    <!-- Widget Area -->
-                    <div class="sidebar-widget-area">
-                        <h5 class="title subscribe-title">Subscribe to my newsletter</h5>
-                        <div class="widget-content">
-                            <form action="#" class="newsletterForm">
-                                <input type="email" name="email" id="subscribesForm" placeholder="Your e-mail here">
-                                <button type="submit" class="btn original-btn">Subscribe</button>
-                            </form>
-                        </div>
-                    </div>
+
 
 
                     <!-- Widget Area -->
                     <div class="sidebar-widget-area">
-                        <h5 class="title">Latest Posts</h5>
+                        <h5 class="title">Öneriler</h5>
 
                         <div class="widget-content">
+                            @foreach (var item in Model.Suggestions)
+                            {
+                                
 
-                            <!-- Single Blog Post -->
-                            <div class="single-blog-post d-flex align-items-center widget-post">
-                                <!-- Post Thumbnail -->
-                                <div class="post-thumbnail">
-                                    <img src="~/Theme/img/blog-img/lp1.jpg" alt="">
-                                </div>
-                                <!-- Post Content -->
-                                <div class="post-content">
-                                    <a href="#" class="post-tag">Lifestyle</a>
-                                    <h4><a href="#" class="post-headline">Party people in the house</a></h4>
-                                    <div class="post-meta">
-                                        <p><a href="#">12 March</a></p>
+                                <!-- Single Blog Post -->
+                                <div class="single-blog-post d-flex align-items-center widget-post">
+                                    <!-- Post Thumbnail -->
+                                    @{
+                                        var linkText = "";
+                                        var link = "";
+                                        var action = "";
+                                        if (item.OgrId == 1)
+                                        {
+                                            linkText = "Film";
+                                            link = "Movies";
+                                            action = "MovieDetail";
+                                        }
+                                        else if (item.OgrId == 2)
+                                        {
+                                            linkText = "Kitap";
+                                            link = "Books";
+                                            action = "BookDetail";
+                                        }
+                                        else
+                                        {
+                                            linkText = "Oyun";
+                                            link = "Games";
+                                            action = "GameDetail";
+                                        }
+                                    }
+                                    <div class="post-thumbnail">
+                                        <a asp-controller="Suggestion" asp-action="@action" asp-route-id="@item.SuggestionId">
+                                        <img src=@item.SuggestionImage alt="">
+                                        </a>
+                                    </div>
+                                    <!-- Post Content -->
+                                    <div class="post-content">
+                                       
+                                        <div class="post-meta">
+                                            <p><a asp-controller="Suggestion" asp-action="@link">@linkText</a></p>
+                                        </div>
+                                        <h4><a asp-controller="Suggestion" asp-action="@action" asp-route-id="@item.SuggestionId" class="post-headline">@item.SuggestionTitle</a></h4>
+
                                     </div>
                                 </div>
-                            </div>
+                            }
 
-                            <!-- Single Blog Post -->
-                            <div class="single-blog-post d-flex align-items-center widget-post">
-                                <!-- Post Thumbnail -->
-                                <div class="post-thumbnail">
-                                    <img src="~/Theme/img/blog-img/lp2.jpg" alt="">
-                                </div>
-                                <!-- Post Content -->
-                                <div class="post-content">
-                                    <a href="#" class="post-tag">Lifestyle</a>
-                                    <h4><a href="#" class="post-headline">A sunday in the park</a></h4>
-                                    <div class="post-meta">
-                                        <p><a href="#">12 March</a></p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Single Blog Post -->
-                            <div class="single-blog-post d-flex align-items-center widget-post">
-                                <!-- Post Thumbnail -->
-                                <div class="post-thumbnail">
-                                    <img src="~/Theme/img/blog-img/lp3.jpg" alt="">
-                                </div>
-                                <!-- Post Content -->
-                                <div class="post-content">
-                                    <a href="#" class="post-tag">Lifestyle</a>
-                                    <h4><a href="#" class="post-headline">Party people in the house</a></h4>
-                                    <div class="post-meta">
-                                        <p><a href="#">12 March</a></p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Single Blog Post -->
-                            <div class="single-blog-post d-flex align-items-center widget-post">
-                                <!-- Post Thumbnail -->
-                                <div class="post-thumbnail">
-                                    <img src="~/Theme/img/blog-img/lp4.jpg" alt="">
-                                </div>
-                                <!-- Post Content -->
-                                <div class="post-content">
-                                    <a href="#" class="post-tag">Lifestyle</a>
-                                    <h4><a href="#" class="post-headline">A sunday in the park</a></h4>
-                                    <div class="post-meta">
-                                        <p><a href="#">12 March</a></p>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
 

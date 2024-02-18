@@ -13,11 +13,21 @@ namespace GamzeBlogPsikolog.Controllers
             _blogPostService = blogPostService;
         }
 
-        public async Task<IActionResult> Index(int id)
+        public async Task<IActionResult> Index(int id, string search)
         {
             if(id == 0)
             {
                 id = 1;
+            }
+            if (search!=null)
+            {
+               var blogs = await _blogPostService.SearchBlog(search);
+                if (blogs.Count()>0)
+                {
+                    ViewBag.totalItem = blogs.Count();
+                    ViewBag.pageNumber = 1;
+                    return View(blogs);
+                }
             }
             var result = await _blogPostService.GetPaginatedBlogPosts(id);
             var blogList = result.Item1; // Sayfalı blog gönderileri

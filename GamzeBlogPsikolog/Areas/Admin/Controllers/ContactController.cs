@@ -19,5 +19,6 @@ namespace GamzeBlogPsikolog.Areas.Admin.Controllers
            await  _commentService.MessageSeen(id);
             return Json("");
         }
+    
     }
 }

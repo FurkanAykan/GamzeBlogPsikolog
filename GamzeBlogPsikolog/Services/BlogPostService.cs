@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 
+
 using GamzeBlogPsikolog.Entity;
 using GamzeBlogPsikolog.Entity.Interfaces;
 using GamzeBlogPsikolog.EntityViewModels;
@@ -7,7 +8,8 @@ using GamzeBlogPsikolog.EntityViewModels;
 using GamzeBlogPsikolog.Context;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using System.Xml;
+
+
 
 
 namespace GamzeBlogPsikolog.Services
@@ -16,18 +18,20 @@ namespace GamzeBlogPsikolog.Services
     {
 
         private readonly IGenericRepostory<BlogPost> _postory;
+        private readonly IGenericRepostory<NewsLatter> _newsrepo;
         private readonly IMapper _mapper;
         private readonly GamzeBlogContext _context;
         private DbSet<BlogPost> _dbSet;
         private readonly ICommentService _commentService;
 
-        public BlogPostService(IGenericRepostory<BlogPost> postory, IMapper mapper, GamzeBlogContext context, ICommentService commentService)
+        public BlogPostService(IGenericRepostory<BlogPost> postory, IMapper mapper, GamzeBlogContext context, ICommentService commentService, IGenericRepostory<NewsLatter> newsrepo)
         {
             _postory = postory;
             _mapper = mapper;
             this._context = context;
             _dbSet = _context.Set<BlogPost>();
             _commentService = commentService;
+            _newsrepo = newsrepo;
         }
 
         public async Task<(List<BlogPostViewModel> blogPosts, int totalItems)> GetPaginatedBlogPosts(int pageNumber)
@@ -111,9 +115,36 @@ namespace GamzeBlogPsikolog.Services
         public async Task<List<BlogPostViewModel>> LastFiveBlog()
         {
             var blogList = await _postory.GetAll(x=>x.Status==true,null,x=>x.Comments);
-            var lastFiveBlogPosts = blogList.TakeLast(5).ToList();          
+            var lastFiveBlogPosts = blogList.TakeLast(5).ToList();
+            lastFiveBlogPosts.Reverse();
             var blogs = _mapper.Map<List<BlogPostViewModel>>(lastFiveBlogPosts);
             return blogs;
         }
+        public async Task SendMail(BlogPost post)
+        {
+               var emails= await _newsrepo.GetAll();
+      
+
+            // Her e-posta adresine e-posta gönder
+            foreach (var email in emails)
+            {
+                SendSingleMail(email.Email, post);
+            }
+        }
+    
+
+        private void SendSingleMail(string emailAddress, BlogPost post)
+        {
+           
+            
+        }
+
+        public async Task<List<BlogPostViewModel>> SearchBlog(string search)
+        {
+            var blogs=await _postory.GetAll(x => x.BlogTitle.Contains(search));
+            var mapped= _mapper.Map<List<BlogPostViewModel>>(blogs);
+            return mapped;
+        }
     }
+    
 }

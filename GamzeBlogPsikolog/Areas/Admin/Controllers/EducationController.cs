@@ -1,7 +1,6 @@
 ﻿using GamzeBlogPsikolog.Entity;
 using GamzeBlogPsikolog.Entity.Interfaces;
 using GamzeBlogPsikolog.EntityViewModels;
-using GamzeBlogPsikolog.Migrations;
 using GamzeBlogPsikolog.Models;
 using Microsoft.AspNetCore.Mvc;
 
