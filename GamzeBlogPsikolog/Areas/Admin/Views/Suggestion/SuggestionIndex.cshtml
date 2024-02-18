@@ -1,0 +1,463 @@
+﻿@{
+    ViewData["Title"] = "SuggestionIndex";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    /* Add this CSS to make the modal full-width */
+    .modal-fullpage {
+        width: 100vw;
+        margin: 0;
+        max-width: 100%;
+    }
+
+    /* Optional: Set a maximum width for the modal content */
+    .modal-content {
+        max-width: 90%; /* Adjust this value as needed */
+        width: 100%;
+        overflow: hidden;
+        margin: auto; /* This centers the modal content horizontally */
+        margin-top: 25px;
+    }
+
+    #resim {
+        width: 8rem;
+        height: 4rem;
+        border-radius: 0;
+    }
+
+    .texts {
+        white-space: break-spaces !important;
+    }
+
+</style>
+<div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h4 class="card-title">Öneriler Sayfası</h4>
+                </div>
+                <div class="col-md-6 d-flex justify-content-end">
+                    <input type="button" class="btn btn-info btn-sm" id="oneriEkle" value="Ekle" />
+                </div>
+                <div class="form-group col-12">
+                    <label for="categorys">Öneri Seçin:</label>
+                    <select class="form-control" id="categorys" name="category">
+                        <option value="1">Film</option>
+                        <option value="2">Kitap</option>
+                        <option value="3">Oyun</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="table-responsive" id="tableContainer">
+                <!-- Tablo buraya gelecek -->
+            </div>
+
+        </div>
+    </div>
+</div>
+@* Modal Start *@
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-fullpage" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button id="closeModalIcon" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="margin-top: -1rem;">
+
+                <div class="page-wrapper bg-blue p-t-100 p-b-100 font-robo">
+                    <div class="wrapper wrapper--w680">
+                        <div class="card card-1">
+                            <div class="card-heading"></div>
+                            <div class="card-body">
+                                <h2 class="title">Öneri  Ekle</h2>
+                                <br />
+                                <form method="POST">
+
+                                    <div class="form-group">
+                                        <label>Resim Yükle</label>
+                                        <input type="file" name="img[]" id="fileInput" class="file-upload-default" onchange="previewImage()">
+                                        <div id="imagePreview" class="mt-2" style="display: none;">
+                                            <img id="preview" src="#" alt="Resim Önizleme" style="max-width: 100px; max-height: 100px;">
+                                        </div>
+                                        <br />
+                                        <div class="input-group col-xs-12">
+                                            <input id="sliderImage" type="text" class="form-control file-upload-info" disabled placeholder="Resim Yükle">
+                                            <span class="input-group-append">
+                                                <button class="file-upload-browse btn btn-gradient-primary btn-sm" type="button" onclick="document.getElementById('fileInput').click()">Yükle</button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="suggestionTitle">Öneri Başlığı</label>
+                                        <input type="text" class="form-control" id="suggestionTitle" placeholder="Öneri Başlığı">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="suggestionUrl" id="urllbl">Film Fragman Url</label>
+                                        <input type="text" class="form-control" id="suggestionUrl" placeholder="URL (Sadece Filmler İçin Giriniz...)">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="suggestionContent">Öneri Açıklama</label>
+                                        <textarea class="form-control" id="suggestionContent" name="suggestionContent" rows="4"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="oneriStatu">Öneri Statüsü</label>
+                                        <select class="form-control" id="oneriStatu">
+                                            <option value="True">Aktif</option>
+                                            <option value="False">Pasif</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="category">Öneri Seçin:</label>
+                                        <select class="form-control" id="category" name="category">
+                                            <option value="1">Film</option>
+                                            <option value="2">Kitap</option>
+                                            <option value="3">Oyun</option>
+                                        </select>
+                                    </div>
+                                    <input type="button" class="btn btn-gradient-primary mr-2 btn-sm" id="btnSuggestionAdd" value="Kaydet" />
+                                    <input type="button" class="btn btn-gradient-primary mr-2 btn-sm" id="btnSuggestionEdit" value="Güncelle" />
+                                    <input type="button" class="btn btn-light btn-sm " id="closeModal" value="İptal" />
+
+                                    <input type="hidden" id="modalSuggestionId" />
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@* Modal End *@
+
+
+@section Scripts {
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.min.js"></script>
+
+    <script>
+
+        CKEDITOR.replace('suggestionContent');
+        @*Veri Çekme Start*@
+            function fetchData(selectedValue) {
+                var responseOgrId = selectedValue;
+                console.log("responseOgrId: " + responseOgrId);
+
+                var categorySelect = document.getElementById("categorys");
+                if (categorySelect) {
+                    categorySelect.value = responseOgrId.toString();
+                }
+
+                $.ajax({
+                    url: "/Admin/Suggestion/GetAll/" + selectedValue,
+                    method: 'GET',
+                    success: function (data) {
+                        var tableBody = '';
+                        data.forEach(function (post, index) {
+                            var statusLabel = post.statu ? "Yayında" : "Yayında Değil";
+                            var statusClass = post.statu ? "success" : "danger";
+                            tableBody += '<tr class="blog-item">';
+                            tableBody += '<td class="fnt-bld">' + (index + 1) + '.</td>';
+                            tableBody += '<td class="texts">' + post.suggestionTitle + '</td>';
+                            tableBody += '<td><label class="badge badge-' + statusClass + '">' + statusLabel + '</label></td>';
+                            tableBody += '<td><input type="submit" class="btn btn-warning btn-sm" id="btnEdit" onclick="suggestionEdit(' + post.suggestionId + ')" value="Güncelle" /></td>';
+                            tableBody += '<td><button class="btn btn-' + (post.statu ? "danger" : "success") + ' btn-sm changeStatu" data-post-id="' + post.suggestionId + '">' + (post.statu ? "Yayından Kaldır" : "Yayına Al") + '</button></td>';
+
+                            tableBody += '</tr>';
+                        });
+                        $('#tableContainer').html('<table class="table table-striped"><thead><tr><th style="width: 10px">#</th><th>Öneri Başlığı</th></tr></thead><tbody class="blog-list">' + tableBody + '</tbody></table>');
+
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            }
+        document.getElementById("categorys").addEventListener("change", function () {
+            var selectedValue = this.value;
+            fetchData(selectedValue);
+        });
+        @*Veri Çekme End*@
+
+        @*Kaydet İşlemi Start*@
+            $(document).ready(function () {
+                $("#oneriEkle").click(function () {
+                    $("#btnSuggestionEdit").hide();
+                    $("#btnSuggestionAdd").show();
+                    $(".card-title").text("Öneri Kaydet");
+                    showImagePreview();
+                    document.getElementById('sliderImage').value = "";
+                    document.getElementById('suggestionTitle').value = "";
+                    document.getElementById('suggestionUrl').value = "";
+                    CKEDITOR.instances['suggestionContent'].setData('');
+                    $('#myModal').modal('show');
+                });
+                $('#btnSuggestionAdd').click(function () {
+                    var fileInput = document.getElementById('fileInput');
+                    var file = fileInput.files[0];
+                    var formData = new FormData();
+                    if (file) {
+                        formData.append('file', file);
+
+                        $.ajax({
+                            type: "POST",
+                            url: "/Admin/Suggestion/UploadImage",
+                            data: formData,
+                            contentType: false,
+                            processData: false,
+                            success: function (imagePath) {
+                                handleBlogPost(imagePath);
+                            },
+                            error: function (error) {
+                                alert("Fotoğraf yüklenirken bir hata oluştu.");
+                            }
+                        });
+                    } else {
+                        handleBlogPost(null);
+                    }
+                });
+
+                function handleBlogPost(imagePath) {
+                    var SuggestionDescription = CKEDITOR.instances.suggestionContent.getData();
+                    var oneriStatu = ($("#oneriStatu").val() === "True");
+                    var selectedCategoryId = $('#category').val();
+                    var postData = {
+                        SuggestionTitle: $('#suggestionTitle').val(),
+                        MovieUrl: $('#suggestionUrl').val(),
+                        SuggestionImage: imagePath,
+                        SuggestionDescription: SuggestionDescription,
+                        Statu: oneriStatu,
+                        OgrId: selectedCategoryId,
+                    };
+                    $.ajax({
+                        type: "POST",
+                        url: "/Admin/Suggestion/AddSuggestion",
+                        data: JSON.stringify(postData),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (response) {
+                            $('#myModal').modal('hide');
+                            selectedValue = response
+                            fetchData(selectedValue);
+                        },
+                        error: function (error) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Hata',
+                                text: 'Bir Hata Oluştu Tekrar Deneyiniz!',
+                                timer: 3000,
+                                showConfirmButton: false
+                            });
+                        }
+                    });
+                }
+            });
+        @*Kaydet İşlemi End*@
+
+        @*Güncelleme İşlemi Start*@
+
+            function suggestionEdit(id) {
+                $("#btnSuggestionEdit").show();
+                $.ajax({
+                    type: "GET",
+                    url: "/Admin/Suggestion/GetData/" + id,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    cache: false,
+                    success: function (response) {
+                        var statusValue = response.statu === true;
+                        $("#oneriStatu").val(statusValue ? "True" : "False");
+                        showImagePreview(response.suggestionImage);
+                        CKEDITOR.instances['suggestionContent'].setData(response.suggestionDescription);
+                        $("#suggestionTitle").val(response.suggestionTitle);
+                        $("#category").val(response.ogrId);
+
+                        $("#modalSuggestionId").val(response.suggestionId);
+                        if (response.movieUrl != null) {
+                            $("#suggestionUrl").val(response.movieUrl);
+                            $("#suggestionUrl").show();
+                            $("#urllbl").show();
+                        } else {
+                            $("#suggestionUrl").hide();
+                            $("#urllbl").hide();
+                        }
+                        var responseOgrId = response.ogrId;
+                        console.log("responseOgrId: " + responseOgrId);
+
+                        var categorySelect = document.getElementById("category");
+                        if (categorySelect) {
+                            categorySelect.value = responseOgrId.toString();
+                        }
+
+                        $("#btnSuggestionAdd").hide();
+                        $(".card-title").text("Öneri Güncelle");
+                    }
+                });
+                $('#myModal').modal('show');
+            }
+
+        $(document).ready(function () {
+            $("#btnSuggestionEdit").on("click", function () {
+                var fileInput = document.getElementById('fileInput');
+                var file = fileInput.files[0];
+                var formData = new FormData();
+                formData.append('file', file);
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/Suggestion/UploadImage",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (imagePaths) {
+                        console.log(imagePaths);
+                        handleBlogEdit(imagePaths);
+                    },
+                    error: function (error) {
+                        alert("Fotoğraf yüklenirken bir hata oluştu.");
+                    }
+                });
+            });
+            function handleBlogEdit(imagePaths) {
+                var SuggestionDescription = CKEDITOR.instances.suggestionContent.getData();
+                var oneriStatu = ($("#oneriStatu").val() === "True");
+                var selectedCategoryId = $('#category').val();
+                var modalSuggestionId = $('#modalSuggestionId').val();
+                var postData = {
+                    SuggestionId: modalSuggestionId,
+                    SuggestionTitle: $('#suggestionTitle').val(),
+                    MovieUrl: $('#suggestionUrl').val(),
+                    SuggestionImage: imagePaths,
+                    SuggestionDescription: SuggestionDescription,
+                    Statu: oneriStatu,
+                    OgrId: selectedCategoryId,
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/Suggestion/AddSuggestion",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    data: JSON.stringify(postData),
+                    success: function (response) {
+                        $('#myModal').modal('hide');
+                        selectedValue = response
+                        fetchData(selectedValue);
+                    },
+                    error: function (error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Hata',
+                            text: 'Bir Hata Oluştu Tekrar Deneyiniz!',
+                            timer: 3000,
+                            showConfirmButton: false
+                        });
+                    }
+                });
+            }
+
+        });
+        @*Güncelleme İşlemi End*@
+        @*Close Modal Start*@
+            $("#closeModalIcon").click(function () {
+                $('#myModal').modal('hide');
+            });
+        $("#closeModal").click(function () {
+            $('#myModal').modal('hide');
+        });
+        @*Close Modal End*@
+
+
+        @*Delete Start*@
+
+            $(document).ready(function () {
+                $(document).on('click', '.changeStatu', function () {
+                    var postId = $(this).data('post-id');
+                    togglePostStatus(postId);
+                });
+            });
+        function togglePostStatus(postId) {
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Suggestion/Delete",
+                data: { id: postId },
+                success: function (selectedValue) {
+                    Swal.fire({
+                        icon: selectedValue.statu ? 'success' : 'error',
+                        title: selectedValue.statu ? 'Başarılı' : 'Kaldırıldı',
+                        text: selectedValue.statu ? 'Blog Yayına Alındı!' : 'Blog Yayından Kaldırıldı!',
+                    }).then(() => {
+                        fetchData(selectedValue.ogrId);
+                    });
+                },
+                error: function (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An error occurred while updating post status.',
+                    });
+                }
+            });
+        }
+
+        @*Delete End*@
+
+
+
+
+        @*Resim Alanın da Fotoğrafı gösterme*@
+
+            function previewImage() {
+                var fileInput = document.getElementById('fileInput');
+                var preview = document.getElementById('preview');
+                var imagePreview = document.getElementById('imagePreview');
+
+                if (fileInput.files && fileInput.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        preview.src = e.target.result;
+                        imagePreview.style.display = 'block';
+                    };
+
+                    reader.readAsDataURL(fileInput.files[0]);
+                } else {
+                    preview.src = '';
+                    imagePreview.style.display = 'none';
+                }
+            }
+        @*Resim Alanın da Fotoğrafı gösterme*@
+
+        @*Resim önizleme fonksiyonu*@
+            function showImagePreview(imagePath) {
+                var imagePreview = document.getElementById('imagePreview');
+                var blogImageInput = document.getElementById('sliderImage');
+                if (imagePath) {
+                    // Resim varsa önizleme alanını göster
+                    imagePreview.style.display = 'block';
+                    // Resmi görüntüle
+                    $('#preview').attr('src', imagePath);
+                    // Resim yolu bilgisini input alanına yaz
+                    blogImageInput.value = imagePath;
+                } else {
+                    // Resim yoksa önizleme alanını gizle
+                    imagePreview.style.display = 'none';
+                    // Input alanını temizle
+                    blogImageInput.value = '';
+                }
+            }
+        @*Resim önizleme fonksiyonu End*@
+
+    </script>
+}
+
+
+

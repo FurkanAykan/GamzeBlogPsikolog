@@ -18,12 +18,19 @@
         .card:hover {
             transform: translateY(-5px);
             box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+            background-color: rgba(255, 69, 0, 0.60);
+
         }
 
-            .card:hover .card-body {
+            .card:hover img {
+                opacity: 0.5; 
+            }
+           /*  .card:hover .card-body {
                 background-color: lightgray; /* Gri tonu, istediğiniz rengi kullanabilirsiniz */
            
             }
+ */
+   
 </style>
 <!-- ##### Breadcumb Area Start ##### -->
 <div class="breadcumb-area bg-img" style="background-color:lightslategray">
@@ -46,8 +53,8 @@
             <a asp-controller="Suggestion" asp-action="MovieDetail" asp-route-id="@item.SuggestionId">
             <div class="col-md-4 mt-5">
                 <!-- 3 kart her satırda görünsün, bu yüzden col-md-4 kullandık -->
-                <div class="card" style="width: 18rem;">
-                    <img src=@item.SuggestionImage class="card-img-top" alt="...">
+                <div class="card" style="width: 18rem; border-radius:15px;">
+                        <img src=@item.SuggestionImage class="card-img-top" style="border-top-left-radius:15px; border-top-right-radius:15px;" alt="...">
                     
                     <div class="card-body">
                         <h5 class="card-title">@item.SuggestionTitle</h5>

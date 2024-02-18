@@ -4,6 +4,7 @@ using GamzeBlogPsikolog.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GamzeBlogPsikolog.Migrations
 {
     [DbContext(typeof(GamzeBlogContext))]
-    partial class GamzeBlogContextModelSnapshot : ModelSnapshot
+    [Migration("20240218113819__suggest")]
+    partial class _suggest
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -176,23 +179,6 @@ namespace GamzeBlogPsikolog.Migrations
                     b.ToTable("Educations");
                 });
 
-            modelBuilder.Entity("GamzeBlogPsikolog.Entity.NewsLatter", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("NewsLatters");
-                });
-
             modelBuilder.Entity("GamzeBlogPsikolog.Entity.ReplyComment", b =>
                 {
                     b.Property<int>("ReplyCommentId")
@@ -304,7 +290,6 @@ namespace GamzeBlogPsikolog.Migrations
                     b.Property<int>("OgrId")
                         .HasColumnType("int");
 
-
                     b.Property<bool>("Statu")
                         .HasColumnType("bit");
 
@@ -315,16 +300,6 @@ namespace GamzeBlogPsikolog.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SuggestionTitle")
-                    b.Property<string>("SuggestionDescription")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SuggestionImage")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SuggestionTitle")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("SuggestionId");
