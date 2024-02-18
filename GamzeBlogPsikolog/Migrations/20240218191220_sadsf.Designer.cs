@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GamzeBlogPsikolog.Migrations
 {
     [DbContext(typeof(GamzeBlogContext))]
-    [Migration("20240217231420__sasd")]
-    partial class _sasd
+    [Migration("20240218191220_sadsf")]
+    partial class sadsf
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -122,6 +122,9 @@ namespace GamzeBlogPsikolog.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsSeen")
+                        .HasColumnType("bit");
+
                     b.HasKey("CommentId");
 
                     b.HasIndex("BlogPostId");
@@ -179,6 +182,23 @@ namespace GamzeBlogPsikolog.Migrations
                     b.ToTable("Educations");
                 });
 
+            modelBuilder.Entity("GamzeBlogPsikolog.Entity.NewsLatter", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("NewsLatters");
+                });
+
             modelBuilder.Entity("GamzeBlogPsikolog.Entity.ReplyComment", b =>
                 {
                     b.Property<int>("ReplyCommentId")
@@ -189,6 +209,9 @@ namespace GamzeBlogPsikolog.Migrations
 
                     b.Property<int>("CommentId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsSeen")
+                        .HasColumnType("bit");
 
                     b.Property<string>("ReplyCommentContent")
                         .IsRequired()
@@ -290,16 +313,16 @@ namespace GamzeBlogPsikolog.Migrations
                     b.Property<int>("OgrId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("Statu")
+                        .HasColumnType("bit");
+
                     b.Property<string>("SuggestionDescription")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SuggestionImage")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SuggestionTitle")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("SuggestionId");

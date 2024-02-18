@@ -119,6 +119,9 @@ namespace GamzeBlogPsikolog.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsSeen")
+                        .HasColumnType("bit");
+
                     b.HasKey("CommentId");
 
                     b.HasIndex("BlogPostId");
@@ -203,6 +206,9 @@ namespace GamzeBlogPsikolog.Migrations
 
                     b.Property<int>("CommentId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsSeen")
+                        .HasColumnType("bit");
 
                     b.Property<string>("ReplyCommentContent")
                         .IsRequired()
@@ -304,7 +310,6 @@ namespace GamzeBlogPsikolog.Migrations
                     b.Property<int>("OgrId")
                         .HasColumnType("int");
 
-
                     b.Property<bool>("Statu")
                         .HasColumnType("bit");
 
@@ -315,16 +320,6 @@ namespace GamzeBlogPsikolog.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SuggestionTitle")
-                    b.Property<string>("SuggestionDescription")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SuggestionImage")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SuggestionTitle")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("SuggestionId");
