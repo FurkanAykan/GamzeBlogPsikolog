@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace GamzeBlogPsikolog.Migrations
 {
     /// <inheritdoc />
-    public partial class n : Migration
+    public partial class _sasd : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,11 +17,11 @@ namespace GamzeBlogPsikolog.Migrations
                 {
                     AboutId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    AboutTitle = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AboutImage = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AboutContent = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AbountSubTitle = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AbountSubContent = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    AboutTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AboutImage = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AboutContent = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AbountSubTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AbountSubContent = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -86,6 +86,88 @@ namespace GamzeBlogPsikolog.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_BlogPosts", x => x.BlogId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ContactMessages",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SendDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsSeen = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ContactMessages", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Educations",
+                columns: table => new
+                {
+                    EducationId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Statu = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Educations", x => x.EducationId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Sliders",
+                columns: table => new
+                {
+                    SliderId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SliderBigText = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SliderSmallText = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<bool>(type: "bit", nullable: false),
+                    SliderImage = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Sliders", x => x.SliderId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Socials",
+                columns: table => new
+                {
+                    SocialId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Facebook = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Instagram = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Twitter = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Tiktok = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Socials", x => x.SocialId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Suggestions",
+                columns: table => new
+                {
+                    SuggestionId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SuggestionTitle = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SuggestionDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SuggestionImage = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MovieUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OgrId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Suggestions", x => x.SuggestionId);
                 });
 
             migrationBuilder.CreateTable(
@@ -316,7 +398,22 @@ namespace GamzeBlogPsikolog.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "ContactMessages");
+
+            migrationBuilder.DropTable(
+                name: "Educations");
+
+            migrationBuilder.DropTable(
                 name: "ReplyComments");
+
+            migrationBuilder.DropTable(
+                name: "Sliders");
+
+            migrationBuilder.DropTable(
+                name: "Socials");
+
+            migrationBuilder.DropTable(
+                name: "Suggestions");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
