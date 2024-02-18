@@ -8,16 +8,18 @@ namespace GamzeBlogPsikolog.Services
     public class CommentService : ICommentService
     {
         private readonly IGenericRepostory<Comment> _commentRepo;
+        private readonly IGenericRepostory<NewsLatter> _newsRepo;
         private readonly IGenericRepostory<ReplyComment> _replyCommentRepo;
         private readonly IGenericRepostory<ContactMessage> _contactRepo;
         private readonly IMapper _mapper;
 
-        public CommentService(IGenericRepostory<Comment> commentRepo, IMapper mapper, IGenericRepostory<ReplyComment> replyCommentRepo, IGenericRepostory<ContactMessage> contactRepo)
+        public CommentService(IGenericRepostory<Comment> commentRepo, IMapper mapper, IGenericRepostory<ReplyComment> replyCommentRepo, IGenericRepostory<ContactMessage> contactRepo, IGenericRepostory<NewsLatter> newsRepo)
         {
             _commentRepo = commentRepo;
             _mapper = mapper;
             _replyCommentRepo = replyCommentRepo;
             _contactRepo = contactRepo;
+            _newsRepo = newsRepo;
         }
 
         public async Task<string> AddComment(CommentViewModel comment)
@@ -136,6 +138,23 @@ namespace GamzeBlogPsikolog.Services
            var message = await _contactRepo.GetByIdAsync(x => x.Id == id);
             message.IsSeen = true;
             _contactRepo.Update(message);
+        }
+
+        public async Task AddNewsLatterList(string email)
+        {
+            try
+            {
+                NewsLatter newSub = new NewsLatter()
+                {
+                    Email = email,
+                };
+                await _newsRepo.Add(newSub);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
     }
 }

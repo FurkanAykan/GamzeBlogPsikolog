@@ -15,6 +15,6 @@ namespace GamzeBlogPsikolog.Entity.Interfaces
         Task<string> SendMessage(MessageViewModel model);
         Task<List<MessageViewModel>> GetAllMessage();
         Task MessageSeen(int id);
-
+        Task AddNewsLatterList(string email);
     }
 }

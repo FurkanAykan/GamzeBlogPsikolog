@@ -20,6 +20,7 @@ namespace GamzeBlogPsikolog.Context
         public DbSet<Education> Educations { get; set; }
 
         public DbSet<Suggestion> Suggestions { get; set; }
+        public DbSet<NewsLatter> NewsLatters { get; set; }
 
 
     }

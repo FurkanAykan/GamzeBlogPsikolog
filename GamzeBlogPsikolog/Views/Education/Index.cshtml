@@ -1,0 +1,72 @@
+﻿@model List<EducationViewModel>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .hakkinda {
+        font-size: 3rem;
+        text-align: center;
+        color: beige;
+        font-family: emoji;
+    }   
+
+
+    .bullet {
+        margin-right: 5px; /* Noktanın metinden biraz ayrılmasını sağlar */
+    }
+    /* Liste öğelerinin stili */
+    .education-list ul {
+        list-style-type: none; /* Noktaları kaldırır */
+        padding-left: 0; /* Liste içi boşluğu kaldırır */
+    }
+
+        .education-list ul li {
+            padding: 10px 0; /* Liste öğeleri arasında boşluk bırakır */
+            border-bottom: 1px solid #ddd; /* Liste öğeleri arasına ince bir çizgi ekler */
+        }
+
+            .education-list ul li:last-child {
+                border-bottom: none; /* Son liste öğesinin alt çizgisini kaldırır */
+            }
+
+    /* Liste öğelerindeki noktanın stili */
+    .education-list .bullet {
+        margin-right: 10px;
+        font-size: 1.2em; /* Noktanın boyutunu büyütür */
+        color: #007bff; /* Noktanın rengini değiştirir */
+    }
+
+    /* Liste öğelerinin üzerine gelindiğinde stil */
+    .education-list ul li:hover {
+        background-color: #f5f5f5; /* Üzerine gelindiğinde arka plan rengini değiştirir */
+    }
+
+</style>
+<!-- ##### Breadcumb Area Start ##### -->
+<div class="breadcumb-area bg-img" style="background-color:lightslategray">
+    <div class="container h-100">
+        <div class="row h-100 align-items-center">
+            <div class="col-12">
+                <div>
+                    <h2 class="hakkinda">
+                        Eğitimlerim
+                    </h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="education-list">
+        <ul>
+            @foreach (var edu in Model)
+            {
+                <li><span class="bullet">&#8226;</span> @edu.Name</li>
+            }
+        </ul>
+    </div>
+</div>
+

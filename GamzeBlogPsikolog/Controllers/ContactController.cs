@@ -26,5 +26,12 @@ namespace GamzeBlogPsikolog.Controllers
             }
             return Json("No");
         }
+        [HttpPost]
+        public JsonResult NewsLatter(string email)
+        {
+            _commentService.AddNewsLatterList(email);
+            return Json("Ok");
+        }
+        
     }
 }
